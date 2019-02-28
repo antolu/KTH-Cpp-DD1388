@@ -2,6 +2,7 @@
 	g++ -std=c++11 -g -Wall $*.cpp -o $*.out
 
 CC = g++
+# CC   = clang++-3.8 -L /usr/lib/gcc/x86_64-linux-gnu/5.4.0 -I /usr/include/x86_64-linux-gnu/c++/5.4.0 -I /usr/include/c++/5.4.0
 
 FLAGS = -std=c++11 -g -Wall -pedantic
 
