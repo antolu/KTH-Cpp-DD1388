@@ -50,5 +50,53 @@ Two. main.cpp depends on hello.cpp, so if hello.cpp is modified, main.cpp has to
 > Why do you think make checks the modification timestamp of the relevant files as part of deciding what to do?  
 Say one replaced a variable of x characters with an equally long variable in terms of character length. The outcome of the code will likely be changed, even though the file size for instance has not been changed. Thus the timestamp of the file should matter.
 
-> What is the difference between an implicit rule and an explicit rule in a makefile?
+> What is the difference between an implicit rule and an explicit rule in a makefile?  
+Implicit rules leave make to figure out while files should be prerequisites and even tries to deduce the recipe, while explicit rules state precisely which files the rule depends on and how the destination file is created from dependencies.
+
 > What does $* mean inside a makefile?
+
+From GNU make: "The stem with which an implicit rule matches".
+
+For instance from my makefile: 
+```
+%.out : %.cpp
+	g++ -std=c++11 -g -Wall $*.cpp -o $*.out
+```
+So the $* variable "constructs" names of the relevant files. Ie foo.cpp is compiled to foo.out, where $* is foo (the stem), in this case. 
+
+#### Hello world questions
+
+> What is the purpose of `std::cout`, `std::cerr` and `std::clog`, respectively? 
+* `std::cout` writes to the standard C output stream stdout. 
+* `std::cerr` writes to the standard C error stream stderr, and is not buffered. 
+* `std::clog` writes to the standard C error stream stderr, but does not flush it. Us clog for logging? 
+
+> How does `#include` work?
+
+#### Debugging questions
+
+> Why does not `powerof` return the expected value (_16_), when invoked with _2_ and _4_?
+The for-loop is terminated by a `;` and is not executed. 
+
+> Why does not `adding_a_decimal` output 100000?
+Floating point precision errors. When summing `sum += step` sum is not exactly incremented by a step, but also includes errors in floating point precision.
+
+> Describe how `weird.out` is invoked by `echo '3.1415' | ./weird.out`  
+Connects (pipes) the output of echo to the weird executable. Since weird has a `std::in` statement, the output of echo ("3.1415") is piped into the standard C input buffer stdin, and is read by the executable at std::cin. 
+
+> Why does not `y` compare equal to `3.1415`?
+`3.1415` is not of type float. 
+
+> Is there any difference in behavior if we compare `y` to `3.1415f`, if so; why?
+It's a question of rounding and precision. Double is doule precision while float is single precision, and the computer usually does not represent the numbers as exactly as one would like them to be. For instance `3.1415` could in fact be `3.14150000000000000000000038791`. So if comparing two different decimal numbers they likely will not be the same. 
+
+> Describe and motivate the recommended method to use when trying to determine if two floating-point values are equal.
+
+As mentioned before, comparing two floats or doubles or float and double needs comparing the numerical valeus of the two. So the recommended method of doing so is simply
+
+```
+if ((floatA - floatB) < EPSILON )
+    // Do something
+```
+
+And one has to choose a proper magnitude for epsilon. This way two numerical values are equal if the difference is smaller than a preset, and is the only way to accurately check if two single- or double-precision values are the same. 
