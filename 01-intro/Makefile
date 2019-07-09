@@ -6,6 +6,9 @@ BUILD_DIR=build
 
 CC=g++
 LD=g++
+CXXTESTGEN=cxxtestgen
+CXXLIBS=-I/opt/cxxtest/
+CXXFLAGS=--error-printer
 CFLAGS=-O2 -Wall -std=c++11 -g
 LFLGAS=
 DFLAGS=-g3 -O0 -DDEBUG
@@ -13,6 +16,7 @@ INCFLAGS=-I$(INC_DIR)
 
 SOURCES=$(wildcard $(SRC_DIR)/*.cpp)
 HEADERS=$(wildcard $(INC_DIR)/*.h)
+TESTS=$(wildcard $(SRC_DIR)/*.cxxtest.cpp)
 
 .PHONY: all 
 all: $(BUILD_DIR)/$(APP)
@@ -24,8 +28,17 @@ debug: all
 weird : | $(BUILD_DIR)
 	$(CC) $(CFLAGS) weird.cpp -o $(BUILD_DIR)/$@
 
+test : $(BUILD_DIR)/runner
+	./$(BUILD_DIR)/runner
+
+$(BUILD_DIR)/runner: runner.cpp $(BUILD_DIR)/count_if_followed_by.o
+	$(CC) $(CXXLIBS) -o $@ $?
+
+runner.cpp: $(TESTS)
+	$(CXXTESTGEN) $(CXXFLAGS) -o $@ $<
+
 $(BUILD_DIR)/%.o : %.cpp | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(INCFLAGS) -c -o $@ $<
 
 $(BUILD_DIR):
 	mkdir -p $@

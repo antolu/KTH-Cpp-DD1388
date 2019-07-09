@@ -100,3 +100,27 @@ if ((floatA - floatB) < EPSILON )
 ```
 
 And one has to choose a proper magnitude for epsilon. This way two numerical values are equal if the difference is smaller than a preset, and is the only way to accurately check if two single- or double-precision values are the same. 
+
+> Why is it important to test the boundary conditions of an implementation, especially in the case of count_if_followed_by?
+
+Boundary values are typically where an implementation needs double checking so the algorithm does precisely what it's supposed to do. 
+
+> Describe how the testcase tests if a pointer is accessing an element outside the range specified
+
+When the pointer accesses an element outside of the range specified, it accesses memory not belongning to the array. Thus it can yield very strange results.
+
+
+
+### Will It Float? (temporaries, resource management, valgrind)
+
+> What constructors are invoked, and when? List the corresponding lines and name the invoked constructor
+First constructor (some other constructor), explicit initialisation,
+Second constructor (copy-constructor), implicit assignment
+Third constructor (copy-constructor), copy initialisation
+Forth constructor (default constructor), default initialisation
+
+> Will there be any temporaries created, if so; when?
+
+
+> What will happen if we try to free a dynamically allocated array through delete p, instead of delete [] p?
+Segfault. 

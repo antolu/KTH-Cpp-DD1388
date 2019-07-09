@@ -17,4 +17,21 @@ class MyTestSuite : public CxxTest::TestSuite {
 
       TS_ASSERT_EQUALS(result, 1);
     }
+
+  void test2 () {
+      char const  data[6] = {'G','G','X','G','X','G'};
+      int  const test_len = 3;
+
+      int const result = count_if_followed_by(data, test_len, 'X', 'G');
+
+      TS_ASSERT_EQUALS(result, 0);      
+  }
+    void test3 () {
+      char const  data[6] = {'X','G','X','G','X','G'};
+      int  const test_len = 0;
+
+      int const result = count_if_followed_by(data, test_len, 'X', 'G');
+
+      TS_ASSERT_EQUALS(result, 8);      
+  }
 };
