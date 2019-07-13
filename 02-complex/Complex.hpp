@@ -11,10 +11,10 @@ class Complex {
  public:
   Complex();
   Complex(double real);
-  Complex(double real, double imaginary);
+  constexpr explicit Complex(double real, double imaginary) : r(real), i(imaginary) {}
   Complex(const Complex& rhs);
 
-  void operator=(const Complex& other);
+  Complex& operator=(const Complex& other);
 
   double& real();
   double& imag();
@@ -26,6 +26,8 @@ class Complex {
   
   friend Complex operator+(const Complex& lhs, const Complex& rhs);
   friend Complex operator-(const Complex& lhs, const Complex& rhs);
+  friend Complex operator*(const Complex& lhs, const Complex& rhs);
+  friend Complex operator/(const Complex& lhs, const Complex& rhs);
 
   friend bool operator==(const Complex& lhs, const Complex& rhs);
   friend bool operator!=(const Complex& lhs, const Complex& rhs);
@@ -36,7 +38,11 @@ class Complex {
 
   friend std::ostream& operator<<(std::ostream& out, const Complex& c);
   friend std::istream& operator>>(std::istream& in, const Complex& c);
-  friend constexpr Complex operator""_i(long double arg);
+  // friend constexpr Complex operator"" _i (long double arg);
 };
+
+constexpr Complex operator"" _i (long double arg) {
+  return Complex{0.0, static_cast<double>(arg)};
+}
 
 #endif
