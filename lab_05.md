@@ -9,13 +9,13 @@ directly in this file while you are doing the assignement.
 #### Questions
 
 #### What is a capture list in a lambda expression?
-
+It's the variables that are made available to the lambda from the outer scope.
 
 #### What does & mean inside the parameter list?
-
+It means to capture all available variables by reference.
 
 #### When could capturing data by reference [&] be useful?
-
+When for instance one wants to edit a variable in the outer scope. For instance write to a log upon callback. 
 
 #### What does {4} in the code below do?
 ```
@@ -26,20 +26,26 @@ directly in this file while you are doing the assignement.
 ```
         foo(pa);
 ```
+Because the unique_ptr has to have unique ownership over the pointer. 
 
 #### Was there ever a memory leak when calling foo2 with a shared pointer?
-
+No
 
 #### What is the use of a weak_ptr?
+Smart pointer that holds non-holding ownership of an object managed by shared_ptr. Must be converted to shared_ptr to access the referenced object. 
 
 
 #### How do you create a unique_ptr with a special deleter?
+std::unique_ptr is a smart pointer that owns and manages another object through a pointer and disposes of that object when the unique_ptr goes out of scope.
+`std::unique_ptr<T, some_deleter>`
 
 
 #### What is _decltype_ ?
+Inspects the declared type of an entity or the type and value category of an expression.
 
 
 #### What is std::function?
+Function wrapper. instances of the class can copy, store, invoke any callable target: functions, lambdas etc. 
 
 
 #### What did you learn in this assignement?
