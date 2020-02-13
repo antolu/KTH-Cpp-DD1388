@@ -78,6 +78,7 @@ public:
   
   Matrix<T>& operator=(Matrix<T> &&other) {
     move(std::move(other));
+    return *this;
   }
 
   // operators
