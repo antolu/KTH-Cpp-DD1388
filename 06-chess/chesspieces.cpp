@@ -1,10 +1,13 @@
-#include "chess.hpp"
+// #include "chess.hpp"
+#include "chesspiece.hpp"
 #include "chesspieces.hpp"
 
 #include <cmath>
 #include <functional>
 
 King::King(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
+
+King::King(const ChessPiece & piece) : ChessPiece(piece) {};
 
 King::~King(){};
 
@@ -71,6 +74,8 @@ std::vector<ChessMove> King::nonCapturingMoves() const
 
 Queen::Queen(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
 
+Queen::Queen(const ChessPiece & piece) : ChessPiece(piece) {};
+
 Queen::~Queen(){};
 
 int Queen::validMove(const int to_x, const int to_y) const
@@ -128,7 +133,7 @@ std::vector<ChessMove> Queen::nonCapturingMoves() const
 }
 
 Bishop::Bishop(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
-
+Bishop::Bishop(const ChessPiece & piece) : ChessPiece(piece) {};
 Bishop::Bishop(){};
 Bishop::~Bishop(){};
 
@@ -295,7 +300,7 @@ std::vector<ChessMove> Bishop::nonCapturingMoves() const
 }
 
 Rook::Rook(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
-
+Rook::Rook(const ChessPiece & piece) : ChessPiece(piece) {};
 Rook::Rook(){};
 Rook::~Rook(){};
 
@@ -450,7 +455,7 @@ std::vector<ChessMove> Rook::nonCapturingMoves() const
 }
 
 Knight::Knight(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
-
+Knight::Knight(const ChessPiece & piece) : ChessPiece(piece) {};
 Knight::~Knight(){};
 
 int Knight::validMove(const int to_x, const int to_y) const
@@ -517,7 +522,7 @@ std::vector<ChessMove> Knight::nonCapturingMoves() const
 }
 
 Pawn::Pawn(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
-
+Pawn::Pawn(const ChessPiece & piece) : ChessPiece(piece) {};
 Pawn::~Pawn(){};
 
 int Pawn::validMove(const int to_x, const int to_y) const

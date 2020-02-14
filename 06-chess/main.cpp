@@ -1,4 +1,5 @@
-#include "chess.hpp"
+#include "chesspiece.hpp"
+#include "chessboard.hpp"
 #include "chesspieces.hpp"
 #include "chessmove.hpp"
 

@@ -1,87 +1,20 @@
-#include <vector>
-#include <codecvt>
+#include <iostream>
+#include <algorithm>
 
-#include "../04-matrix/matrix.hpp"
-#include "chess.hpp"
+#include "chesspiece.hpp"
 #include "chesspieces.hpp"
 
-ChessPiece::ChessPiece(){};
-
-ChessPiece::~ChessPiece(){};
-
-ChessPiece::ChessPiece(int x, int y, bool is_white, ChessBoard *board)
-{
-    this->x = x;
-    this->y = y;
-    this->isWhite = is_white;
-    this->board = board;
-}
-
-int ChessPiece::validMove(const int to_x, const int to_y) const
-{
-    return 0;
-}
-
-char32_t ChessPiece::utfRepresentation() const
-{
-    return ' ';
-}
-
-char ChessPiece::latin1Representation() const
-{
-    return ' ';
-}
-
-bool ChessPiece::out_of_bounds(const int to_x, const int to_y) const
-{
-    return to_x >= 8 || to_y >= 8 || to_x < 0 || to_y < 0;
-}
-
-bool ChessPiece::same_color(const ChessPiece *other) const
-{
-    // if (other == nullptr) return false;
-    return isWhite == other->isWhite;
-}
-
-std::vector<ChessMove> ChessPiece::generate_moves(const int sign) const
-{
-    std::vector<ChessMove> ret;
-    return ret;
-}
-
-bool ChessPiece::capturingMove(const int to_x, const int to_y)
-{
-    return validMove(to_x, to_y) == 2;
-}
-
-bool ChessPiece::nonCapturingMove(const int to_x, const int to_y)
-{
-    return validMove(to_x, to_y) == 1;
-}
-
-std::vector<ChessMove> ChessPiece::capturingMoves() const
-{
-    std::vector<ChessMove> ret;
-    return ret;
-}
-
-std::vector<ChessMove> ChessPiece::nonCapturingMoves() const
-{
-    std::vector<ChessMove> ret;
-    return ret;
-}
-
 ChessBoard::ChessBoard() {
-    // std::stringstream s;
-    // s << "rnbqkbnr" << std::endl;
-    // s << "pppppppp" << std::endl;
-    // s << "........" << std::endl;
-    // s << "........" << std::endl;
-    // s << "........" << std::endl;
-    // s << "........" << std::endl;
-    // s << "PPPPPPPP" << std::endl;
-    // s << "RNBQKBNR";
-    // s >> *this;
+    std::stringstream s;
+    s << "rnbqkbnr" << std::endl;
+    s << "pppppppp" << std::endl;
+    s << "........" << std::endl;
+    s << "........" << std::endl;
+    s << "........" << std::endl;
+    s << "........" << std::endl;
+    s << "PPPPPPPP" << std::endl;
+    s << "RNBQKBNR";
+    s >> *this;
 };
 
 ChessBoard::~ChessBoard()
@@ -90,6 +23,12 @@ ChessBoard::~ChessBoard()
         delete piece;
 
     for (auto piece : black_pieces)
+        delete piece;
+
+    for (auto piece : captured_white_pieces)
+        delete piece;
+    
+    for (auto piece : captured_black_pieces)
         delete piece;
 }
 
@@ -107,12 +46,15 @@ void ChessBoard::move_piece(const ChessMove chessmove)
     {
         ChessPiece *to_remove = state(chessmove.from_x, chessmove.from_y);
 
-        // if (to_remove->isWhite)
-        //     white_pieces.erase(to_remove);
-        // else
-        //     black_pieces.erase(to_remove);
-        delete to_remove;
-
+        if (to_remove->isWhite) {
+            white_pieces.erase(std::remove(white_pieces.begin(), white_pieces.end(), to_remove), white_pieces.end());
+            captured_white_pieces.push_back(to_remove);
+        }
+        else {
+            black_pieces.erase(std::remove(black_pieces.begin(), black_pieces.end(), to_remove), black_pieces.end());
+            captured_black_pieces.push_back(to_remove);
+        }
+        
         state(chessmove.to_x, chessmove.to_y) = chesspiece;
     }
     else if (chesspiece->nonCapturingMove(chessmove.to_x, chessmove.to_y))
@@ -126,6 +68,26 @@ void ChessBoard::move_piece(const ChessMove chessmove)
     }
 }
 
+ChessPiece * ChessBoard::promote_piece(const ChessPiece * piece, const std::string promotion) {
+    ChessPiece * promoted;
+    if (promotion == "q")
+        promoted = new Queen(*piece);
+    else if (promotion == "r")
+        promoted = new Rook(*piece);
+    else if (promotion == "b")
+        promoted = new Bishop(*piece);
+    else if (promotion == "n")
+        promoted = new Knight(*piece);
+    else
+        throw std::runtime_error("Promotion " + promotion + " not recognised!");
+    
+    state(piece->x, piece->y) = promoted;
+
+    delete piece;
+
+    return promoted;
+}
+
 std::vector<ChessMove> ChessBoard::capturingMoves(bool isWhite) const
 {
     std::vector<ChessMove> possible_moves;
@@ -134,13 +96,13 @@ std::vector<ChessMove> ChessBoard::capturingMoves(bool isWhite) const
         for (auto piece : white_pieces)
         {
             std::vector<ChessMove> moves = piece->capturingMoves();
-            possible_moves.insert(possible_moves.begin(), moves.begin(), moves.end());
+            possible_moves.insert(possible_moves.end(), moves.begin(), moves.end());
         }
     else
         for (auto piece : black_pieces)
         {
             std::vector<ChessMove> moves = piece->capturingMoves();
-            possible_moves.insert(possible_moves.begin(), moves.begin(), moves.end());
+            possible_moves.insert(possible_moves.end(), moves.begin(), moves.end());
         }
     return possible_moves;
 }
@@ -153,15 +115,40 @@ std::vector<ChessMove> ChessBoard::nonCapturingMoves(bool isWhite) const
         for (auto piece : white_pieces)
         {
             std::vector<ChessMove> moves = piece->nonCapturingMoves();
-            possible_moves.insert(possible_moves.begin(), moves.begin(), moves.end());
+            possible_moves.insert(possible_moves.end(), moves.begin(), moves.end());
         }
     else
         for (auto piece : black_pieces)
         {
             std::vector<ChessMove> moves = piece->nonCapturingMoves();
-            possible_moves.insert(possible_moves.begin(), moves.begin(), moves.end());
+            possible_moves.insert(possible_moves.end(), moves.begin(), moves.end());
         }
     return possible_moves;
+}
+
+std::vector<ChessPiece *> ChessBoard::promotablePieces(const bool is_white) const {
+    std::vector<ChessPiece *> promotable_pieces;
+    
+    int y = 0;
+    std::vector<ChessPiece *> pieces;
+    
+    if (is_white) {
+        y = 0;
+        pieces = white_pieces;
+    }
+    else {
+        y = 7;
+        pieces = black_pieces;
+    }
+
+    for (int x = 0; x < 8; x++) {
+        ChessPiece * piece = state(x, y);
+        if (piece == nullptr) continue;
+        if (typeid(piece).name() == "Pawn" && std::count(pieces.begin(), pieces.end(), piece))
+            promotable_pieces.push_back(piece);
+    } 
+
+    return promotable_pieces;
 }
 
 const ChessBoard ChessBoard::apply_move(const ChessMove move) const
@@ -175,6 +162,13 @@ const ChessBoard ChessBoard::apply_move(const ChessMove move) const
 ChessBoard &
 operator>>(std::istream &is, ChessBoard &board)
 {
+    /* Replace the current board */
+    board.state.reset();
+    board.white_pieces.clear();
+    board.black_pieces.clear();
+    board.captured_black_pieces.clear();
+    board.captured_white_pieces.clear();
+
     char piece;
     ChessPiece *chesspiece = nullptr;
     bool is_white;
@@ -216,8 +210,6 @@ operator>>(std::istream &is, ChessBoard &board)
                 board.white_pieces.push_back(chesspiece);
             else
                 board.black_pieces.push_back(chesspiece);
-
-            
         }
 
     return board;
@@ -267,11 +259,18 @@ const ChessPiece *ChessBoard::at(const int x, const int y) const
     return state(x, y);
 }
 
-std::ostream & operator<<(std::ostream& ostream, ChessPiece * chesspiece) {
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv32;
-    return ostream << conv32.to_bytes(chesspiece->utfRepresentation());
+bool ChessBoard::isEOG() const {
+    return white_pieces.size() == 0 || black_pieces.size() == 0;
 }
 
-std::wostream & operator<<(std::wostream& ostream, ChessPiece * chesspiece) {
-    return ostream << chesspiece->utfRepresentation();
+bool ChessBoard::is_white_win() const {
+    return black_pieces.size() == 0;
+}
+
+bool ChessBoard::is_black_win() const {
+    return white_pieces.size() == 0;
+}
+
+bool ChessBoard::is_draw() const {
+    throw std::runtime_error("Not yet implemented.");
 }

@@ -5,7 +5,7 @@ BUILD_DIR=build
 CC=g++
 LD=g++
 
-CFLAGS=-O2 -Wall -std=c++17 -g -fext-numeric-literals -I$(INC_DIR)
+CFLAGS=-O2 -Wall -std=c++17 -g -fext-numeric-literals -I$(INC_DIR) -gdwarf-2
 LFLAGS=-lgtest
 DFLAGS=-ggdb3 -O0 -DDEBUG
 CFLAGS+=$(DFLAGS)

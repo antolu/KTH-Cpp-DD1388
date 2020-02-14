@@ -1,59 +1,28 @@
 #ifndef DD1388_CHESSPIECE_HPP
 #define DD1388_CHESSPIECE_HPP
 
-#include "../04-matrix/matrix.hpp"
-#include "chessmove.hpp"
+#include <iostream>
 #include <vector>
-
+#include "chessmove.hpp"
+#include "chessboard.hpp"
 
 struct ChessMove;
 
-#include <unordered_set>
-
-class ChessBoard
-{
-    // add additional members or functions of your choice
-public:
-    ChessBoard();
-    ~ChessBoard();
-    ChessBoard(const ChessBoard & board);
-
-private:
-    Matrix<ChessPiece *> state = Matrix<ChessPiece *>(8); // Matris from lab 4  Matrix
-
-    std::vector<ChessPiece *> white_pieces;
-    std::vector<ChessPiece *> black_pieces;
-
-public:
-    void move_piece(const ChessMove chessMove);
-    std::vector<ChessMove> capturingMoves(bool isWhite) const;
-    std::vector<ChessMove> nonCapturingMoves(bool isWhite) const;
-
-    friend ChessBoard &operator>>(std::istream &, ChessBoard &);
-    friend std::ostream &operator<<(std::ostream &, ChessBoard &);
-    friend std::wostream &operator<<(std::wostream &, ChessBoard &);
-
-    const ChessPiece *at(const int x, const int y) const;
-    const bool is_free(const int x, const int y) const;
-
-    const ChessBoard apply_move(const ChessMove move) const;
-    // const bool is_white(Chesspiece* chesspiece) const;
-};
-
 class ChessPiece
 {
-    friend void ChessBoard::move_piece(ChessMove p);
+    friend void ChessBoard::move_piece(const ChessMove p);
+    friend ChessPiece * ChessBoard::promote_piece(const ChessPiece * piece, const std::string promotion);
 
 public:
     ChessPiece();
+    ChessPiece(const ChessPiece & piece);
     virtual ~ChessPiece();
 
 protected:
     int x, y;
     bool isWhite;
     ChessBoard *board;
-    bool captured = false;
-
+    
     ChessPiece(int x, int y, bool is_white, ChessBoard *board);
     /**
          * Returns 0 if target square is unreachable.

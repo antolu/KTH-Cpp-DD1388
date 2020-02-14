@@ -1,7 +1,8 @@
 #ifndef DD1388_CHESSMOVE_HPP
 #define DD1388_CHESSMOVE_HPP
 
-#include "chess.hpp"
+// #include "chess.hpp"
+#include "chesspiece.hpp"
 
 class ChessPiece;
 

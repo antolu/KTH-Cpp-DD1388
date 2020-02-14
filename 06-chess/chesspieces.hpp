@@ -1,9 +1,15 @@
 #ifndef DD1388_CHESSPIECES_HPP
 #define DD1388_CHESSPIECES_HPP
 
-#include "chess.hpp"
+#include <vector>
 
+#include "chessboard.hpp"
+#include "chesspiece.hpp"
+#include "chessmove.hpp"
+
+class ChessBoard;
 class ChessPiece;
+struct ChessMove;
 
 class King : public ChessPiece
 {
@@ -16,6 +22,7 @@ protected:
 
 public:
     King(int x, int y, bool is_white, ChessBoard * board);
+    King(const ChessPiece & piece);
     ~King();
 
     std::vector<ChessMove> capturingMoves() const;
@@ -35,6 +42,7 @@ protected:
 
 public:
     Bishop();
+    Bishop(const ChessPiece & piece);
     ~Bishop();
     Bishop(int x, int y, bool is_white, ChessBoard * board);
     virtual std::vector<ChessMove> capturingMoves() const;
@@ -54,6 +62,7 @@ protected:
 
 public:
     Rook();
+    Rook(const ChessPiece & piece);
     ~Rook();
     Rook(int x, int y, bool is_white, ChessBoard * board);
     std::vector<ChessMove> capturingMoves() const;
@@ -73,6 +82,7 @@ protected:
 
 public:
     Queen(int x, int y, bool is_white, ChessBoard * board);
+    Queen(const ChessPiece & piece);
     ~Queen();
     std::vector<ChessMove> capturingMoves() const;
     std::vector<ChessMove> nonCapturingMoves() const;
@@ -99,6 +109,7 @@ protected:
 
 public:
     Knight(int x, int y, bool is_white, ChessBoard * board);
+    Knight(const ChessPiece & piece);
     ~Knight();
     std::vector<ChessMove> capturingMoves() const;
     std::vector<ChessMove> nonCapturingMoves() const;
@@ -117,6 +128,7 @@ protected:
 
 public:
     Pawn(int x, int y, bool is_white, ChessBoard * board);
+    Pawn(const ChessPiece & piece);
     ~Pawn();
     std::vector<ChessMove> capturingMoves() const;
     std::vector<ChessMove> nonCapturingMoves() const;
