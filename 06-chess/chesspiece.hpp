@@ -12,6 +12,7 @@ class ChessPiece
 {
     friend void ChessBoard::move_piece(const ChessMove p);
     friend ChessPiece * ChessBoard::promote_piece(const ChessPiece * piece, const std::string promotion);
+    friend bool operator==(const ChessMove &, const ChessMove &);
 
 public:
     ChessPiece();

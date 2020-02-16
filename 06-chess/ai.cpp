@@ -1,6 +1,7 @@
 #include <random>
 #include <string>
 
+#include "chessboard.hpp"
 #include "ai.hpp"
 #include "gameengine.hpp"
 #include "chessmove.hpp"
@@ -58,6 +59,25 @@ AI2::AI2(bool is_white) {
 }
 
 ChessMove AI2::play(const GameEngine & state) {
+    ChessBoard board = state.get_board();
+    int current_player = state.getNextPlayer();
+
+    /* Check for possible promotions */
+
+    std::vector<ChessMove> capturing_moves = board.capturingMoves(current_player == 0);
+
+    if (capturing_moves.size() > 0) {
+        std::vector<std::pair<ChessMove, ChessBoard>> possible_boards;
+
+        for (ChessMove move : capturing_moves)
+            possible_boards.push_back(std::make_pair(move, board.apply_move(move)));
+        
+        /* Check resulting boards if a capturing move is forced */
+    }
+
+    /* Get noncapturing moves and see if they force a move */
+
+
     return ChessMove({0, 0, 0, 0, nullptr});
 }
 

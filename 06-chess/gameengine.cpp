@@ -31,6 +31,8 @@ GameEngine::GameEngine(std::string player1_type, std::string player2_type) {
             players[i] = new AI2(i == 0);
         else if (player_types[i] == "minimax")
             players[i] = new minimaxAI(i == 0);
+        else
+            throw std::runtime_error("AI type not recognised: " + player_types[i]);
     }
 
     (void) players;
@@ -50,7 +52,9 @@ void GameEngine::play() {
     AI* player[2] = {player1, player2};
 
     while (!board->isEOG()) {
-        player[current_player]->play(*this);
+        ChessMove move = player[current_player]->play(*this);
+        ChessBoard new_board = board->apply_move(move);
+        board = &new_board;
         current_player = !current_player;
     }
 }

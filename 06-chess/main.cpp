@@ -1,14 +1,19 @@
-#include "chesspiece.hpp"
-#include "chessboard.hpp"
-#include "chesspieces.hpp"
-#include "chessmove.hpp"
-
-
 #include <vector>
 #include <string>
 #include <iostream>
 #include <sstream>
+
+#include "chesspiece.hpp"
+#include "chessboard.hpp"
+#include "chesspieces.hpp"
+#include "chessmove.hpp"
+#include "gameengine.hpp"
+
 #include "gtest/gtest.h"
+#include "command_line.hpp"
+
+std::string ai1 = "minimax";
+std::string ai2 = "minimax";
 
 
 TEST(CapturingMoves, 1) {
@@ -239,23 +244,21 @@ TEST(CapturingMoves, 12) {
     std::cout << chess << std::endl;
 }
 
-// TEST(Play,1) {
-//     ChessBoard chess;
-//     std::stringstream s;
-//     s << "rnbqkbnr" << std::endl;
-//     s << "pppppppp" << std::endl;
-//     s << "........" << std::endl;
-//     s << "........" << std::endl;
-//     s << "........" << std::endl;
-//     s << "........" << std::endl;
-//     s << "PPPPPPPP" << std::endl;
-//     s << "RNBQKBNR";
-//     s >> chess;
-// }
+TEST(Play,1) {
+    GameEngine ge(ai1, ai2);
+    ge.play();
+}
 
 
 int main(int argc, char *argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
+
+    if (cmdOptionExists(argv, argv + argc, "--ai1")) {
+        ai1 = getCmdOption(argv, argv + argc, "--ai1");
+    }
+    if (cmdOptionExists(argv, argv + argc, "--ai2")) {
+        ai2 = getCmdOption(argv, argv + argc, "--ai2");
+    }
     return RUN_ALL_TESTS();
 }

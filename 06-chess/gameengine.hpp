@@ -4,8 +4,6 @@
 #include <vector> 
 
 #include "ai.hpp"
-// #include "chessboard.hpp"
-// #include "chessmove.hpp"
 
 class ChessBoard;
 struct ChessMove;

@@ -2,7 +2,7 @@
 #define DD1388_CHESSMOVE_HPP
 
 // #include "chess.hpp"
-#include "chesspiece.hpp"
+// #include "chesspiece.hpp"
 
 class ChessPiece;
 
@@ -12,7 +12,9 @@ struct ChessMove {
     int to_x;
     int to_y;
 
-    ChessPiece* piece;   // you can change the position of the chess piece with this pointer.
+    ChessPiece* piece; // you can change the position of the chess piece with this pointer.
+
+    friend bool operator==(const ChessMove & lhs, const ChessMove & rhs);
 };
 
 #endif

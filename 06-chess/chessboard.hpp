@@ -32,7 +32,16 @@ public:
     ChessPiece * promote_piece(const ChessPiece * piece, const std::string promotion);
     std::vector<ChessMove> capturingMoves(const bool isWhite) const;
     std::vector<ChessMove> nonCapturingMoves(const bool isWhite) const;
-    std::vector<ChessPiece *> promotablePieces(const bool is_white) const;
+    std::vector<ChessPiece *> promotablePieces(const bool is_white) const; 
+
+    /**
+     * Returns whether the move `move` forces a capturing move for the opponent
+     * 
+     * @param move The ChessMove to try
+     * @param is_white The color of the querying (current) player
+     * @return Whether the move forces a capturing move for the opponent
+     */
+    bool forces_capturing_move(const ChessMove & move, const bool is_white) const;
 
     friend ChessBoard &operator>>(std::istream &, ChessBoard &);
     friend std::ostream &operator<<(std::ostream &, ChessBoard &);

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <codecvt>
 
+#include "chessmove.hpp"
 #include "chesspiece.hpp"
 
 
@@ -84,4 +85,17 @@ std::ostream & operator<<(std::ostream& ostream, ChessPiece * chesspiece) {
 
 std::wostream & operator<<(std::wostream& ostream, ChessPiece * chesspiece) {
     return ostream << chesspiece->utfRepresentation();
+}
+
+bool operator==(const ChessMove & lhs, const ChessMove & rhs) {
+    if (lhs.from_x != rhs.from_x || lhs.from_y != rhs.from_y || lhs.to_x != rhs.to_x || lhs.to_y != rhs.to_y )
+        return false;
+
+    if (lhs.piece->isWhite != rhs.piece->isWhite)
+        return false;
+
+    if (!std::is_same<decltype(lhs.piece), decltype(rhs.piece)>::value)
+        return false;
+
+    return true;
 }

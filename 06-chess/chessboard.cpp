@@ -151,6 +151,12 @@ std::vector<ChessPiece *> ChessBoard::promotablePieces(const bool is_white) cons
     return promotable_pieces;
 }
 
+bool ChessBoard::forces_capturing_move(const ChessMove & move, const bool is_white) const {
+    std::vector<ChessMove> current_capturing_moves = capturingMoves(!is_white);
+
+    throw std::logic_error("Not yet implemented");
+}
+
 const ChessBoard ChessBoard::apply_move(const ChessMove move) const
 {
     ChessBoard new_board = ChessBoard(*this);
