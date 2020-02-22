@@ -91,6 +91,12 @@ public:
     int get_weight() const;
 
     /**
+     * Returns the capacity (max weight) of the knapsack.
+     * @return The max_weight of the knapsack.
+     */
+    int get_capacity() const;
+
+    /**
      * Calculates the load factor of the bag, i.e. current weight / max weight.
      *
      * @return The calculated load factor current / max weight.
@@ -105,6 +111,7 @@ public:
     int get_free_weight() const;
 
     friend std::ostream &operator<<(std::ostream &ostream, const Knapsack &knapsack);
+    friend bool operator==(const Knapsack & lhs, const Knapsack & rhs);
 };
 
 /**

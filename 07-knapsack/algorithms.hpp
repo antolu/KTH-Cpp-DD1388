@@ -19,10 +19,8 @@
  * and which kind of gold bars were taken
  */
 template <typename S>
-std::string greedytake(S start, S end, int N)
+Knapsack greedytake(S start, S end, int N)
 {
-    std::stringstream ss;
-
     /* Greedily add gold to the knapsack, starting from the most valuable pieces */
     Knapsack knapsack(N);
     for (S it = start; it != end; it++)
@@ -31,23 +29,18 @@ std::string greedytake(S start, S end, int N)
             continue;
     }
 
-    ss << knapsack;
-
-    return ss.str();
+    return knapsack;
 }
 
 
 /**
- *
- * @param start Begin iterator to iterable containing std::pair with weights and values
- * @param end End iterator to iterable containing std::pair with weights and values
- * @param N The weight of the knapsack
- * @param memory A map containing the optimal values of <knapsack weight, knapsack>
- * 
- * @return A string with information on how much gold one took, how much it weighs,
- * and which kind of gold bars were taken
+ * Wrapper for the function with the same name below.
  */
-
+template <class T>
+Knapsack dynamictake(const T & begin, const T & end, const int & knapsacksize) {
+    std::vector<Knapsack> memory;
+    return dynamictake(begin, end, knapsacksize, memory);
+}
 
 /**
  * Generic function. Takes begin and end iterator of container and iterates over the knapsack sizes to

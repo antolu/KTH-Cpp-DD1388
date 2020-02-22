@@ -77,6 +77,10 @@ int Knapsack::get_weight() const
     return current_weight;
 }
 
+int Knapsack::get_capacity() const {
+    return max_weight;
+}
+
 int Knapsack::get_free_weight() const {
     return max_weight - current_weight;
 }
@@ -115,4 +119,21 @@ bool operator<(const Knapsack & lhs, const Knapsack & rhs) {
     double other_val = rhs.get_value();
 
     return this_val * lhs.get_load_factor() < other_val * rhs.get_load_factor();
+}
+
+bool operator==(const Knapsack & lhs, const Knapsack & rhs) {
+    if (lhs.max_weight != rhs.max_weight)
+        return false;
+
+    if (lhs.current_weight != rhs.current_weight)
+        return false;
+
+    if (lhs.current_value != rhs.current_value)
+        return false;
+
+    for (auto gold : lhs.contents) {
+        if (rhs.contents.count(gold.first) == 0 || rhs.contents.at(gold.first) != gold.second)
+            return false;
+    }
+    return true;
 }
