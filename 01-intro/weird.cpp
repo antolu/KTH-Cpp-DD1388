@@ -11,7 +11,7 @@ int powerof (int x, int y) {
 }
 
 void adding_a_decimal(float step) {
-  float sum = step;
+  double sum = step;
   for (int i = 0; i < 1000*1000; ++i) {
     sum += step;
   }
@@ -30,7 +30,7 @@ int main () {
   float y;
   std::cout << "What is the value of PI? ";
   std::cin >> y;
-  if (y == 3.1415)
+  if (y == 3.1415f)
     std::cout << y << " is equal to 3.1415!\n";
   else
     std::cout << y << " is not equal to 3.1415!\n";
