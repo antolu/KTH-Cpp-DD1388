@@ -35,3 +35,7 @@
 build
 
 cmake-build-debug
+CMakeFiles
+Testing
+cmake-build-debug
+.idea
