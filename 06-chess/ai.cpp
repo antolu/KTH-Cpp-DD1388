@@ -7,51 +7,57 @@
 #include "chessmove.hpp"
 
 
-AI::AI() {}
+AI::AI() {
+    std::random_device dev;
+    rng = std::mt19937(dev());
+}
 
-AI::~AI() {};
+AI::~AI() = default;;
 
 ChessMove AI::play(const GameEngine & state) {
     return ChessMove({0, 0, 0, 0, nullptr});
 }
 
-AI1::AI1() {
-    std::random_device dev;
-    rng = std::mt19937(dev());
+ChessMove AI::select_random(const std::vector<ChessMove> &moves) const {
+    std::uniform_int_distribution<int> dist(0, moves.size());
+    return moves[dist(rng)];
 }
+
+AI1::AI1() = default;
 
 AI1::AI1(bool is_white) {
 
 }
 
 ChessMove AI1::play(const GameEngine & state) {
-    /* Promotion */
-    std::vector<ChessPiece *> promotable_pieces = state.find_promotable_pieces();
-    if (promotable_pieces.size() > 0) {
-        std::string promotions[4] = {"q", "r", "b", "n"};
-        std::uniform_int_distribution<int> dist(0, promotable_pieces.size());
-        ChessPiece * to_promote = promotable_pieces[dist(rng)];
-
-        std::uniform_int_distribution<int> choice_dist(0, 4);
-        state.board->promote_piece(to_promote, promotions[choice_dist(rng)]);
-    }
-
-    std::vector<ChessMove> capturing_moves = state.find_capturing_moves();
 
     /* Capturing moves */
-    if (capturing_moves.size() > 0) {
-        std::uniform_int_distribution<int> dist(0, capturing_moves.size());
-        return capturing_moves[dist(rng)];
+    auto capturing_moves = state.find_capturing_moves();
+    if (!capturing_moves.empty()) {
+        return select_random(capturing_moves);
     }
 
     /* Non-capturing moves */
-    std::vector noncapturing_moves = state.find_noncapturing_moves();
-    if (noncapturing_moves.size() > 0) {
-        std::uniform_int_distribution<int> dist(0, noncapturing_moves.size());
-        return noncapturing_moves[dist(rng)];
+    auto noncapturing_moves = state.find_noncapturing_moves();
+    if (!noncapturing_moves.empty()) {
+        return select_random(noncapturing_moves);
     }
 
-    return ChessMove({0, 0, 0, 0, nullptr});
+    /* Promotion */
+    std::vector<ChessMove> promotion_moves = state.find_promotion_moves();
+    if (!promotion_moves.empty()) {
+        std::uniform_int_distribution<int> dist(0, promotion_moves.size());
+        ChessMove to_promote = promotion_moves[dist(rng)];
+
+        std::uniform_int_distribution<int> choice_dist(0, 4);
+        char promotion = promotions[choice_dist(rng)];
+
+        to_promote.promotion = promotion;
+
+        return to_promote;
+    }
+
+    return ChessMove(0, 0, 0, 0, nullptr);
 }
 
 AI2::AI2(bool is_white) {
@@ -62,21 +68,44 @@ ChessMove AI2::play(const GameEngine & state) {
     ChessBoard board = state.get_board();
     int current_player = state.getNextPlayer();
 
-    /* Check for possible promotions */
+    auto find_good_moves = [this, &state] (const std::vector<ChessMove> & possible_moves, const std::vector<ChessMove> & opponent_capturing_moves) -> ChessMove {
+        std::vector<ChessMove> good_moves;
 
-    std::vector<ChessMove> capturing_moves = board.capturingMoves(current_player == 0);
+        for (ChessMove move: possible_moves)
+            if (state.forces_capturing_move(move, opponent_capturing_moves))
+                good_moves.push_back(move);
 
-    if (capturing_moves.size() > 0) {
-        std::vector<std::pair<ChessMove, ChessBoard>> possible_boards;
+        if (!good_moves.empty())
+            return select_random(good_moves);
+        else
+            return select_random(possible_moves);
+    };
 
-        for (ChessMove move : capturing_moves)
-            possible_boards.push_back(std::make_pair(move, board.apply_move(move)));
-        
-        /* Check resulting boards if a capturing move is forced */
-    }
+    auto opponent_capturing_moves = board.capturingMoves(current_player != 0);
 
     /* Get noncapturing moves and see if they force a move */
+    auto non_capturing_moves = board.nonCapturingMoves(current_player == 0);
+    if (!non_capturing_moves.empty())
+        return find_good_moves(non_capturing_moves, opponent_capturing_moves);
 
+    std::vector<ChessMove> capturing_moves = board.capturingMoves(current_player == 0);
+    if (!capturing_moves.empty())
+        return find_good_moves(capturing_moves, opponent_capturing_moves);
+
+    /* Check for possible promotions */
+    auto promotion_moves = board.promotablePieces(current_player == 0);
+    if (!promotion_moves.empty()) {
+        // TODO: Check if a promoted piece has a capturing move
+        std::uniform_int_distribution<int> dist(0, promotion_moves.size());
+        ChessMove to_promote = promotion_moves[dist(rng)];
+
+        std::uniform_int_distribution<int> choice_dist(0, 4);
+        char promotion = promotions[choice_dist(rng)];
+
+        to_promote.promotion = promotion;
+
+        return to_promote;
+    }
 
     return ChessMove({0, 0, 0, 0, nullptr});
 }

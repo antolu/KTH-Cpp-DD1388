@@ -12,6 +12,11 @@ class ChessMove;
 class AI
 {
     bool is_white;
+protected:
+    std::mt19937 rng;
+    static char promotions[4] = {'q', 'r', 'b', 'n'};
+
+    ChessMove select_random(const std::vector<ChessMove> & moves) const;
 public:
     AI();
     AI(bool is_white);
@@ -22,7 +27,6 @@ public:
 
 class AI1 : public AI {
     
-    std::mt19937 rng;
     public:
     AI1();
     AI1(bool is_white);
@@ -45,5 +49,6 @@ class minimaxAI : public AI {
 
     ChessMove play(const GameEngine & state);
 };
+
 
 #endif

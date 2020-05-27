@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 #include "chesspiece.hpp"
 #include "chesspieces.hpp"
@@ -39,19 +40,38 @@ ChessBoard::ChessBoard(const ChessBoard &board)
     black_pieces = std::vector<ChessPiece *>(board.black_pieces);
 }
 
-void ChessBoard::move_piece(const ChessMove chessmove)
+void ChessBoard::move_piece(const ChessMove & chessmove)
 {
+    auto erase = [] (std::vector<ChessPiece *> & pieces, ChessPiece * piece) {
+        pieces.erase(std::remove(pieces.begin(), pieces.end(), piece), pieces.end());
+    };
+
     ChessPiece *chesspiece = chessmove.piece;
-    if (chesspiece->capturingMove(chessmove.to_x, chessmove.to_y))
+    if (chessmove.promotion != 0) {
+        // TODO: Should check for valid promotion
+        if (!chesspiece->validMove(chessmove.to_x, chessmove.to_y))
+            throw new std::logic_error("Not a valid move!");
+
+        ChessPiece *new_piece = promote_piece(chessmove);
+        if (chessmove.piece->isWhite)
+            erase(white_pieces, chesspiece);
+        else
+            erase(black_pieces, chesspiece);
+
+        delete chesspiece;
+        state(chessmove.from_x, chessmove.from_y) = nullptr;
+        state(chessmove.to_x, chessmove.to_y) = new_piece;
+    }
+    else if (chesspiece->capturingMove(chessmove.to_x, chessmove.to_y))
     {
         ChessPiece *to_remove = state(chessmove.from_x, chessmove.from_y);
 
         if (to_remove->isWhite) {
-            white_pieces.erase(std::remove(white_pieces.begin(), white_pieces.end(), to_remove), white_pieces.end());
+            erase(white_pieces, to_remove);
             captured_white_pieces.push_back(to_remove);
         }
         else {
-            black_pieces.erase(std::remove(black_pieces.begin(), black_pieces.end(), to_remove), black_pieces.end());
+            erase(black_pieces, to_remove);
             captured_black_pieces.push_back(to_remove);
         }
         
@@ -68,22 +88,19 @@ void ChessBoard::move_piece(const ChessMove chessmove)
     }
 }
 
-ChessPiece * ChessBoard::promote_piece(const ChessPiece * piece, const std::string promotion) {
+ChessPiece * ChessBoard::promote_piece(const ChessMove &move) {
     ChessPiece * promoted;
-    if (promotion == "q")
-        promoted = new Queen(*piece);
-    else if (promotion == "r")
-        promoted = new Rook(*piece);
-    else if (promotion == "b")
-        promoted = new Bishop(*piece);
-    else if (promotion == "n")
-        promoted = new Knight(*piece);
-    else
-        throw std::runtime_error("Promotion " + promotion + " not recognised!");
-    
-    state(piece->x, piece->y) = promoted;
 
-    delete piece;
+    if (move.promotion == 'q')
+        promoted = new Queen(*move.piece);
+    else if (move.promotion == 'r')
+        promoted = new Rook(*move.piece);
+    else if (move.promotion == 'b')
+        promoted = new Bishop(*move.piece);
+    else if (move.promotion == 'n')
+        promoted = new Knight(*move.piece);
+    else
+        throw std::runtime_error("Promotion " + std::to_string(move.promotion) + " not recognised!");
 
     return promoted;
 }
@@ -126,36 +143,34 @@ std::vector<ChessMove> ChessBoard::nonCapturingMoves(bool isWhite) const
     return possible_moves;
 }
 
-std::vector<ChessPiece *> ChessBoard::promotablePieces(const bool is_white) const {
-    std::vector<ChessPiece *> promotable_pieces;
+std::vector<ChessMove> ChessBoard::promotablePieces(const bool is_white) const {
+    std::vector<ChessMove> promotion_moves;
     
     int y = 0;
+    int to_y;
     std::vector<ChessPiece *> pieces;
     
     if (is_white) {
-        y = 0;
+        y = 1;
+        to_y = 0;
         pieces = white_pieces;
     }
     else {
-        y = 7;
+        y = 6;
+        to_y = 7;
         pieces = black_pieces;
     }
 
     for (int x = 0; x < 8; x++) {
         ChessPiece * piece = state(x, y);
         if (piece == nullptr) continue;
-        if (typeid(piece).name() == "Pawn" && std::count(pieces.begin(), pieces.end(), piece))
-            promotable_pieces.push_back(piece);
+        if (std::string(typeid(piece).name()) == "Pawn" && std::count(pieces.begin(), pieces.end(), piece))
+            promotion_moves.push_back(ChessMove(x, y, x, to_y, piece));
     } 
 
-    return promotable_pieces;
+    return promotion_moves;
 }
 
-bool ChessBoard::forces_capturing_move(const ChessMove & move, const bool is_white) const {
-    std::vector<ChessMove> current_capturing_moves = capturingMoves(!is_white);
-
-    throw std::logic_error("Not yet implemented");
-}
 
 const ChessBoard ChessBoard::apply_move(const ChessMove move) const
 {

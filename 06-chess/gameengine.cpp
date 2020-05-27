@@ -5,6 +5,7 @@
 #include "chessboard.hpp"
 // #include "chess.hpp"
 #include "ai.hpp"
+#include <set>
 
 GameEngine::GameEngine() {
     board = new ChessBoard();
@@ -53,8 +54,8 @@ void GameEngine::play() {
 
     while (!board->isEOG()) {
         ChessMove move = player[current_player]->play(*this);
-        ChessBoard new_board = board->apply_move(move);
-        board = &new_board;
+        /* Need to check if a piece is promoted */
+        board->move_piece(move);
         current_player = !current_player;
     }
 }
@@ -83,14 +84,31 @@ std::vector<ChessMove> GameEngine::find_noncapturing_moves() const {
     return board->nonCapturingMoves(current_player == 0);
 }
 
-std::vector<ChessBoard> GameEngine::find_promotional_moves() const {
-    std::vector<ChessPiece *> promotional_pieces = board->promotablePieces(current_player == 0);
-    std::vector<ChessBoard> moves;
-    return moves;
+std::vector<ChessMove> GameEngine::find_promotion_moves() const {
+    return board->promotablePieces(current_player == 0);
 }
 
-std::vector<ChessPiece *> GameEngine::find_promotable_pieces() const {
-    return board->promotablePieces(current_player == 0);
+bool GameEngine::forces_capturing_move(const ChessMove & move) const {
+    int current_player = getNextPlayer();
+
+    auto opponent_capturing_moves = board->capturingMoves(!current_player);
+
+    return forces_capturing_move(move, opponent_capturing_moves);
+}
+
+bool GameEngine::forces_capturing_move(const ChessMove &move, const std::vector<ChessMove> &current_capturing_moves) const {
+    ChessBoard new_board = board->apply_move(move);
+
+    auto new_opponent_moves = new_board.capturingMoves(!getNextPlayer());
+
+    std::set<ChessMove> current_moves(current_capturing_moves.begin(), current_capturing_moves.end());
+    std::set<ChessMove> new_moves(new_opponent_moves.begin(), new_opponent_moves.end());
+
+    if (current_moves == new_moves)
+        return false;
+
+    return new_moves.size() > current_moves.size();
+
 }
 
 ChessBoard GameEngine::get_board() const {
@@ -120,3 +138,4 @@ bool GameEngine::is_white_turn() const {
 bool GameEngine::is_black_turn() const {
     return current_player == 1;
 }
+

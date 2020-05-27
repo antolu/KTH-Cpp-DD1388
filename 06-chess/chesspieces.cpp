@@ -45,8 +45,7 @@ char King::latin1Representation() const
     return 'k';
 }
 
-std::vector<ChessMove> King::generate_moves(const int sign) const
-{
+std::vector<ChessMove> King::generate_moves(const int sign) {
     std::vector<ChessMove> possibleMoves;
 
     for (int i = -1; i <= 1; i++)
@@ -56,18 +55,17 @@ std::vector<ChessMove> King::generate_moves(const int sign) const
                 continue;
 
             if (validMove(x + i, y + j) == sign)
-                possibleMoves.push_back(ChessMove({x, y, x + i, y + j}));
+                possibleMoves.push_back(ChessMove(x, y, x + i, y + j, this));
         }
 
     return possibleMoves;
 }
 
-std::vector<ChessMove> King::capturingMoves() const
-{
+std::vector<ChessMove> King::capturingMoves() {
     return generate_moves(2);
 }
 
-std::vector<ChessMove> King::nonCapturingMoves() const
+std::vector<ChessMove> King::nonCapturingMoves()
 {
     return generate_moves(1);
 }
@@ -112,7 +110,7 @@ char Queen::latin1Representation() const
     return 'q';
 }
 
-std::vector<ChessMove> Queen::generate_moves(const int sign) const
+std::vector<ChessMove> Queen::generate_moves(const int sign)
 {
     std::vector<ChessMove> rook_moves = Rook::generate_moves(sign);
     std::vector<ChessMove> bishop_moves = Bishop::generate_moves(sign);
@@ -122,12 +120,11 @@ std::vector<ChessMove> Queen::generate_moves(const int sign) const
     return rook_moves;
 }
 
-std::vector<ChessMove> Queen::capturingMoves() const
-{
+std::vector<ChessMove> Queen::capturingMoves() {
     return generate_moves(2);
 }
 
-std::vector<ChessMove> Queen::nonCapturingMoves() const
+std::vector<ChessMove> Queen::nonCapturingMoves()
 {
     return generate_moves(1);
 }
@@ -229,8 +226,7 @@ char Bishop::latin1Representation() const
     return 'b';
 }
 
-std::vector<ChessMove> Bishop::generate_moves(const int sign) const
-{
+std::vector<ChessMove> Bishop::generate_moves(const int sign) {
     std::vector<ChessMove> possible_moves;
 
     /* Generate diagonal moves */
@@ -251,7 +247,7 @@ std::vector<ChessMove> Bishop::generate_moves(const int sign) const
     auto north_west_increment = [&to_x, &to_y]() {to_x--; to_y--; };
 
     auto loop = [&to_x, &to_y, &sign, &possible_moves, this](auto &condition, auto &increment) {
-        auto add_move = [&possible_moves, this](int to_x, int to_y) { possible_moves.push_back(ChessMove({x, y, to_x, to_y})); };
+        auto add_move = [&possible_moves, this](int to_x, int to_y) { possible_moves.push_back(ChessMove(x, y, to_x, to_y, this)); };
 
         int move_res;
         while (condition(to_x, to_y))
@@ -289,12 +285,11 @@ std::vector<ChessMove> Bishop::generate_moves(const int sign) const
     return possible_moves;
 }
 
-std::vector<ChessMove> Bishop::capturingMoves() const
-{
+std::vector<ChessMove> Bishop::capturingMoves() {
     return Bishop::generate_moves(2);
 }
 
-std::vector<ChessMove> Bishop::nonCapturingMoves() const
+std::vector<ChessMove> Bishop::nonCapturingMoves()
 {
     return Bishop::generate_moves(1);
 }
@@ -384,8 +379,7 @@ char Rook::latin1Representation() const
     return 'r';
 }
 
-std::vector<ChessMove> Rook::generate_moves(const int sign) const
-{
+std::vector<ChessMove> Rook::generate_moves(const int sign) {
     std::vector<ChessMove> possible_moves;
 
     /* Generate diagonal moves */
@@ -406,7 +400,7 @@ std::vector<ChessMove> Rook::generate_moves(const int sign) const
     auto west_increment = [&to_x]() { to_x--; };
 
     auto loop = [&to_x, &to_y, &sign, &possible_moves, this](auto &condition, auto &increment) {
-        auto add_move = [&possible_moves, this](int to_x, int to_y) { possible_moves.push_back(ChessMove({x, y, to_x, to_y})); };
+        auto add_move = [&possible_moves, this](int to_x, int to_y) { possible_moves.push_back(ChessMove(x, y, to_x, to_y, this)); };
 
         int move_res;
         while (condition(to_x, to_y))
@@ -444,12 +438,11 @@ std::vector<ChessMove> Rook::generate_moves(const int sign) const
     return possible_moves;
 }
 
-std::vector<ChessMove> Rook::capturingMoves() const
-{
+std::vector<ChessMove> Rook::capturingMoves() {
     return Rook::generate_moves(2);
 }
 
-std::vector<ChessMove> Rook::nonCapturingMoves() const
+std::vector<ChessMove> Rook::nonCapturingMoves()
 {
     return Rook::generate_moves(1);
 }
@@ -492,8 +485,7 @@ char Knight::latin1Representation() const
     return 'n';
 }
 
-std::vector<ChessMove> Knight::generate_moves(const int sign) const
-{
+std::vector<ChessMove> Knight::generate_moves(const int sign) {
     std::vector<ChessMove> possible_moves;
 
     int to_x, to_y;
@@ -505,18 +497,17 @@ std::vector<ChessMove> Knight::generate_moves(const int sign) const
         to_y = y + move_offset.y;
 
         if (validMove(to_x, to_y) == sign)
-            possible_moves.push_back(ChessMove({x, y, to_x, to_y}));
+            possible_moves.push_back(ChessMove(x, y, to_x, to_y, this));
     }
 
     return possible_moves;
 }
 
-std::vector<ChessMove> Knight::capturingMoves() const
-{
+std::vector<ChessMove> Knight::capturingMoves() {
     return generate_moves(2);
 }
 
-std::vector<ChessMove> Knight::nonCapturingMoves() const
+std::vector<ChessMove> Knight::nonCapturingMoves()
 {
     return generate_moves(1);
 }
@@ -582,8 +573,7 @@ char Pawn::latin1Representation() const
     return 'p';
 }
 
-std::vector<ChessMove> Pawn::generate_moves(const int sign) const
-{
+std::vector<ChessMove> Pawn::generate_moves(const int sign) {
     std::vector<ChessMove> possible_moves;
 
     /* forward or backward move depending on color */
@@ -596,17 +586,16 @@ std::vector<ChessMove> Pawn::generate_moves(const int sign) const
     /* diagonal or straight move */
     for (int to_x = x - 1; to_x <= x + 1; to_x++)
         if (validMove(to_x, to_y) == sign)
-            possible_moves.push_back(ChessMove({x, y, to_x, to_y}));
+            possible_moves.push_back(ChessMove(x, y, to_x, to_y, this));
 
     return possible_moves;
 }
 
-std::vector<ChessMove> Pawn::capturingMoves() const
-{
+std::vector<ChessMove> Pawn::capturingMoves() {
     return generate_moves(2);
 }
 
-std::vector<ChessMove> Pawn::nonCapturingMoves() const
+std::vector<ChessMove> Pawn::nonCapturingMoves()
 {
     return generate_moves(1);
 };
