@@ -5,7 +5,7 @@ BUILD_DIR=build
 CC=g++
 LD=g++
 
-CFLAGS=-O2 -Wall -std=c++11 -g -fext-numeric-literals -pthread
+CFLAGS=-O2 -Wall -std=c++17 -g -fext-numeric-literals -pthread
 LFLGAS=
 DFLAGS=-ggdb3 -O0 -DDEBUG
 CFLAGS+=$(DFLAGS)
