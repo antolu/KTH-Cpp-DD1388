@@ -108,8 +108,32 @@ std::ostream& operator<<(std::ostream& out, const Complex& c) {
   return out;
 }
 
-std::istream& operator>>(std::istream& in, const Complex& c) {
-  (void) c;
+std::istream& operator>>(std::istream& in, Complex& complex) {
+    char c = in.get();
+
+    if (c == '(')
+        c = in.get();
+
+    double res[2] = {0, 0};
+    std::string n = "";
+    int idx = 0;
+    do {
+        if (c == ',' or c == ')') {
+            res[idx++] = std::stod(n);
+            n = "";
+        }
+        else {
+            n += c;
+        }
+        c = in.get();
+    } while (c != EOF);
+
+    if (idx == 0 and n != "")
+        res[idx] = std::stod(n);
+
+    complex.r = res[0];
+    complex.i = res[1];
+
   return in;
 }
 

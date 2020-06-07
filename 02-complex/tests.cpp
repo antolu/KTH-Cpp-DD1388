@@ -49,6 +49,20 @@ TEST(complex_numbers, complex_numers) {
   std::cout << Complex(-6, 6) / 6 << std::endl;
 }
 
+TEST(istream, 1) {
+    std::istringstream real1("10.8");
+    std::istringstream real2("(10.8)");
+    std::istringstream combo3("(-9,20.54)");
+
+    Complex complex1, complex2, complex3;
+    real1 >> complex1;
+    real2 >> complex2;
+    combo3 >> complex3;
+
+    EXPECT_EQ(complex1, Complex(10.8, 0));
+    EXPECT_EQ(complex2, Complex(10.8, 0));
+    EXPECT_EQ(complex3, Complex(-9, 20.54));
+}
 
 int main(int argc, char ** argv) {
     ::testing::InitGoogleTest(&argc, argv);
