@@ -22,7 +22,7 @@ TEST(null, 1) {
 
 
 TEST(size_1_tree, 1) {
-  Node * bst = new Node();
+  Node * bst = nullptr;
   insert(bst, 10, 1.0);
   std::cout << bst << std::endl;
 
@@ -52,7 +52,7 @@ TEST(size_1_tree, 1) {
 
 
 TEST(size_g1_tree, 1) {
-  Node * bst = new Node();
+  Node * bst = nullptr;
 
   insert(bst, 18, 20.0);
   insert(bst, 27, 8.0);

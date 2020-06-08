@@ -12,8 +12,8 @@ TEST(balance, 1)
     for (int i = 1; i <= 9000; i++)
         keys[i - 1] = i;
 
-    // int seed = 960611;
-    int seed = 96;
+     int seed = 960611;
+//    int seed = 96;
     std::shuffle(std::begin(keys), std::end(keys), std::default_random_engine(seed));
 
     int max_res[800];
