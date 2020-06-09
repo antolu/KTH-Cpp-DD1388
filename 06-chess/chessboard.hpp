@@ -5,10 +5,9 @@
 #include <vector>
 
 #include "../04-matrix/matrix.hpp"
-// #include "chesspiece.hpp"
-#include "chessmove.hpp"
 
 struct ChessMove;
+class ChessPiece;
 
 class ChessBoard
 {
@@ -27,6 +26,8 @@ private:
     std::vector<ChessPiece *> captured_white_pieces;
     std::vector<ChessPiece *> captured_black_pieces;
 
+    void copy(const ChessBoard& other);
+
 public:
     void move_piece(const ChessMove & chessMove);
     ChessPiece * promote_piece(const ChessMove & chessMove);
@@ -34,6 +35,7 @@ public:
     std::vector<ChessMove> nonCapturingMoves(const bool isWhite) const;
     std::vector<ChessMove> promotablePieces(const bool is_white) const;
 
+    ChessBoard& operator=(const ChessBoard& other);
 
     friend ChessBoard &operator>>(std::istream &, ChessBoard &);
     friend std::ostream &operator<<(std::ostream &, ChessBoard &);
@@ -42,7 +44,7 @@ public:
     const ChessPiece *at(const int x, const int y) const;
     const bool is_free(const int x, const int y) const;
 
-    const ChessBoard apply_move(const ChessMove move) const;
+    ChessBoard * apply_move(const ChessMove move) const;
     // const bool is_white(Chesspiece* chesspiece) const;
 
     bool isEOG() const;

@@ -14,7 +14,7 @@ struct ChessMove;
 class King : public ChessPiece
 {
 protected:
-    int validMove(const int to_x, const int to_y) const;
+    int validMove(const int to_x, const int to_y) const override;
     char32_t utfRepresentation() const;
     char latin1Representation() const;
 
@@ -24,6 +24,7 @@ public:
     King(int x, int y, bool is_white, ChessBoard * board);
     King(const ChessPiece & piece);
     ~King();
+    King* clone();
 
     std::vector<ChessMove> capturingMoves();
     std::vector<ChessMove> nonCapturingMoves();
@@ -44,6 +45,8 @@ public:
     Bishop();
     Bishop(const ChessPiece & piece);
     ~Bishop();
+    virtual Bishop* clone();
+
     Bishop(int x, int y, bool is_white, ChessBoard * board);
     virtual std::vector<ChessMove> capturingMoves();
     virtual std::vector<ChessMove> nonCapturingMoves();
@@ -64,6 +67,8 @@ public:
     Rook();
     Rook(const ChessPiece & piece);
     ~Rook();
+    virtual Rook* clone();
+
     Rook(int x, int y, bool is_white, ChessBoard * board);
     std::vector<ChessMove> capturingMoves();
     std::vector<ChessMove> nonCapturingMoves();
@@ -84,6 +89,8 @@ public:
     Queen(int x, int y, bool is_white, ChessBoard * board);
     Queen(const ChessPiece & piece);
     ~Queen();
+    Queen* clone();
+
     std::vector<ChessMove> capturingMoves();
     std::vector<ChessMove> nonCapturingMoves();
 };
@@ -111,6 +118,8 @@ public:
     Knight(int x, int y, bool is_white, ChessBoard * board);
     Knight(const ChessPiece & piece);
     ~Knight();
+    Knight* clone();
+
     std::vector<ChessMove> capturingMoves();
     std::vector<ChessMove> nonCapturingMoves();
 };
@@ -130,6 +139,9 @@ public:
     Pawn(int x, int y, bool is_white, ChessBoard * board);
     Pawn(const ChessPiece & piece);
     ~Pawn();
+    Pawn* clone();
+
+    bool promotionMove(const int to_x, const int to_y) const;
     std::vector<ChessMove> capturingMoves();
     std::vector<ChessMove> nonCapturingMoves();
 };

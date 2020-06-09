@@ -10,8 +10,8 @@ struct ChessMove;
 
 class ChessPiece
 {
-    friend void ChessBoard::move_piece(const ChessMove p);
-    friend ChessPiece * ChessBoard::promote_piece(const ChessPiece * piece, const std::string promotion);
+    friend void ChessBoard::move_piece(const ChessMove & p);
+    friend ChessPiece * ChessBoard::promote_piece(const ChessMove& move);
     friend bool operator==(const ChessMove &, const ChessMove &);
 
 public:
@@ -30,7 +30,7 @@ protected:
          * Returns 1 if target square is reachable and empty.
          * Returns 2 if move captures a piece.
          */
-    virtual int validMove(const int to_x, const int to_y) const;
+    virtual int validMove(const int to_x, const int to_y) const = 0;
     virtual char32_t utfRepresentation() const;
     virtual char latin1Representation() const;
 
@@ -50,8 +50,11 @@ public:
          * Checks if this move is valid but does not capture a piece.
          */
     bool nonCapturingMove(const int to_x, const int to_y);
-    virtual std::vector<ChessMove> capturingMoves() const;
-    virtual std::vector<ChessMove> nonCapturingMoves() const;
+    virtual bool promotionMove(const int to_x, const int to_y) const;
+    virtual std::vector<ChessMove> capturingMoves();
+    virtual std::vector<ChessMove> nonCapturingMoves();
+    virtual ChessPiece* clone() = 0;
+    void set_board(ChessBoard * board);
 
     /**
 		* For testing multiple inheritance

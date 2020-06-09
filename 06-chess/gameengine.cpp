@@ -1,17 +1,17 @@
 #include <vector>
 
-#include "gameengine.hpp"
-#include "chesspiece.hpp"
 #include "chessboard.hpp"
-// #include "chess.hpp"
+#include "chesspiece.hpp"
+#include "gameengine.hpp"
 #include "ai.hpp"
 #include <set>
+
 
 GameEngine::GameEngine() {
     board = new ChessBoard();
 
-    player1 = new AI1(true);
-    player2 = new AI1(false);
+    player1 = new AI1();
+    player2 = new AI1();
     current_player = 0;
 }
 
@@ -27,16 +27,17 @@ GameEngine::GameEngine(std::string player1_type, std::string player2_type) {
 
     for (int i = 0; i < 2; i++) {
         if (player_types[i] == "random")
-            players[i] = new AI1(i == 0);
+            players[i] = new AI1();
         else if (player_types[i] == "random1step")
-            players[i] = new AI2(i == 0);
+            players[i] = new AI2();
         else if (player_types[i] == "minimax")
             players[i] = new minimaxAI(i == 0);
         else
             throw std::runtime_error("AI type not recognised: " + player_types[i]);
     }
 
-    (void) players;
+    player1 = players[0];
+    player2 = players[1];
     board = new ChessBoard();
 }
 
@@ -52,21 +53,27 @@ int GameEngine::getNextPlayer() const {
 void GameEngine::play() {
     AI* player[2] = {player1, player2};
 
+    int turn = 0;
+    std::string plyr;
+    std::cout << "Starting game, initial board state: \n" << *board << "\n" << std::endl;
+
     while (!board->isEOG()) {
+        plyr = current_player ? "black" :"white";
         ChessMove move = player[current_player]->play(*this);
         /* Need to check if a piece is promoted */
         board->move_piece(move);
+        std::cout << "Player " << plyr << " finished turn " << ++turn << ". Current board state:\n" << *board << '\n' << std::endl;
         current_player = !current_player;
     }
 }
 
-std::vector<ChessBoard> GameEngine::find_possible_moves() const {
+std::vector<ChessBoard*> GameEngine::find_possible_boards() const {
     std::vector<ChessMove> possible_moves = board->capturingMoves(current_player == 0);
     std::vector<ChessMove> more_moves = board->nonCapturingMoves(current_player == 0);
     
     possible_moves.insert(possible_moves.end(), more_moves.begin(), more_moves.end());
 
-    std::vector<ChessBoard> possible_boards;
+    std::vector<ChessBoard*> possible_boards;
     possible_boards.reserve(possible_moves.size());
 
     for (ChessMove move : possible_moves) {
@@ -97,9 +104,12 @@ bool GameEngine::forces_capturing_move(const ChessMove & move) const {
 }
 
 bool GameEngine::forces_capturing_move(const ChessMove &move, const std::vector<ChessMove> &current_capturing_moves) const {
-    ChessBoard new_board = board->apply_move(move);
+    ChessBoard * new_board = board->apply_move(move);
 
-    auto new_opponent_moves = new_board.capturingMoves(!getNextPlayer());
+    auto new_opponent_moves = new_board->capturingMoves(!getNextPlayer());
+
+    if (new_opponent_moves.empty())
+        return false;
 
     std::set<ChessMove> current_moves(current_capturing_moves.begin(), current_capturing_moves.end());
     std::set<ChessMove> new_moves(new_opponent_moves.begin(), new_opponent_moves.end());
@@ -111,8 +121,8 @@ bool GameEngine::forces_capturing_move(const ChessMove &move, const std::vector<
 
 }
 
-ChessBoard GameEngine::get_board() const {
-    return ChessBoard(*board);
+ChessBoard * GameEngine::get_board() const {
+    return board;
 }
 
 bool GameEngine::isEOG() const {

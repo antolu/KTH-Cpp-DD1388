@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <codecvt>
 
 #include "chesspiece.hpp"
 #include "chesspieces.hpp"
@@ -33,11 +34,46 @@ ChessBoard::~ChessBoard()
         delete piece;
 }
 
+void ChessBoard::copy(const ChessBoard& other) {
+    auto exists_in = [](const std::vector<ChessPiece*> & vec, const ChessPiece* ptr) -> bool {
+        return std::find(vec.begin(), vec.end(), ptr) != vec.end();
+    };
+
+    ChessPiece * piece;
+    ChessPiece * copy;
+    state = Matrix<ChessPiece *>(8, 8);
+    for (int x = 0; x < 8; x++)
+        for (int y = 0; y < 8; y++) {
+            if (other.state(y, x) == nullptr)
+                continue;
+            else {
+                piece = other.state(y, x);
+                copy = piece->clone();
+                copy->set_board(this);
+
+                if (exists_in(other.white_pieces, piece))
+                    white_pieces.push_back(copy);
+                else if (exists_in(other.black_pieces, piece))
+                    black_pieces.push_back(copy);
+                else
+                    throw std::logic_error("Piece is neither registered as white, nor black. Probably something is wrong.");
+
+                state(y, x) = copy;
+            }
+        }
+}
+
 ChessBoard::ChessBoard(const ChessBoard &board)
 {
-    state = Matrix<ChessPiece *>(board.state);
-    white_pieces = std::vector<ChessPiece *>(board.white_pieces);
-    black_pieces = std::vector<ChessPiece *>(board.black_pieces);
+    copy(board);
+}
+
+ChessBoard& ChessBoard::operator=(const ChessBoard &other) {
+    if (this == &other)
+        return *this;
+
+    copy(other);
+    return *this;
 }
 
 void ChessBoard::move_piece(const ChessMove & chessmove)
@@ -49,8 +85,8 @@ void ChessBoard::move_piece(const ChessMove & chessmove)
     ChessPiece *chesspiece = chessmove.piece;
     if (chessmove.promotion != 0) {
         // TODO: Should check for valid promotion
-        if (!chesspiece->validMove(chessmove.to_x, chessmove.to_y))
-            throw new std::logic_error("Not a valid move!");
+        if (!chesspiece->promotionMove(chessmove.to_x, chessmove.to_y))
+            throw std::logic_error("Not a valid promotional move!");
 
         ChessPiece *new_piece = promote_piece(chessmove);
         if (chessmove.piece->isWhite)
@@ -74,7 +110,7 @@ void ChessBoard::move_piece(const ChessMove & chessmove)
             erase(black_pieces, to_remove);
             captured_black_pieces.push_back(to_remove);
         }
-        
+        delete to_remove;
         state(chessmove.to_x, chessmove.to_y) = chesspiece;
     }
     else if (chesspiece->nonCapturingMove(chessmove.to_x, chessmove.to_y))
@@ -172,11 +208,11 @@ std::vector<ChessMove> ChessBoard::promotablePieces(const bool is_white) const {
 }
 
 
-const ChessBoard ChessBoard::apply_move(const ChessMove move) const
+ChessBoard * ChessBoard::apply_move(const ChessMove move) const
 {
-    ChessBoard new_board = ChessBoard(*this);
+    ChessBoard * new_board = new ChessBoard(*this);
 
-    new_board.move_piece(move);
+    new_board->move_piece(move);
     return new_board;
 }
 
@@ -238,14 +274,22 @@ operator>>(std::istream &is, ChessBoard &board)
 
 std::ostream &operator<<(std::ostream &ostream, ChessBoard &board)
 {
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv32;
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
         {
-            if (board.is_free(j, i))
-                ostream << "_";
+            ostream << " ";
+            if (board.is_free(j, i)) {
+                if (not ((i + j) % 2))
+                    ostream << conv32.to_bytes(U'\u25A0');
+                else
+                    ostream << conv32.to_bytes(U'\u25A1');
+//                ostream << "_";
+            }
             else
                 ostream << board.state(j, i);
+            ostream << " ";
         }
         ostream << std::endl;
     }

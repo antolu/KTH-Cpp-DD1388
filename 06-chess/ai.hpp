@@ -14,29 +14,29 @@ class AI
     bool is_white;
 protected:
     std::mt19937 rng;
-    static char promotions[4] = {'q', 'r', 'b', 'n'};
+    static constexpr char promotions[4] = {'q', 'r', 'b', 'n'};
 
-    ChessMove select_random(const std::vector<ChessMove> & moves) const;
+    ChessMove select_random(const std::vector<ChessMove> & moves);
+    char select_random_promotion();
 public:
     AI();
     AI(bool is_white);
     virtual ~AI();
 
-    virtual ChessMove play(const GameEngine & state);
+    virtual ChessMove play(const GameEngine & state) = 0;
 };
 
 class AI1 : public AI {
     
     public:
     AI1();
-    AI1(bool is_white);
 
     ChessMove play(const GameEngine & state);
 };
 
 class AI2 : public AI {
     public:
-    AI2(bool is_white);
+    AI2();
 
     ChessMove play(const GameEngine & state);
 };

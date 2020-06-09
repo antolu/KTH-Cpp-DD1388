@@ -24,10 +24,10 @@ ChessPiece::ChessPiece(int x, int y, bool is_white, ChessBoard *board)
     this->board = board;
 }
 
-int ChessPiece::validMove(const int to_x, const int to_y) const
-{
-    return 0;
-}
+//int ChessPiece::validMove(const int to_x, const int to_y) const
+//{
+//    return 0;
+//}
 
 char32_t ChessPiece::utfRepresentation() const
 {
@@ -66,13 +66,17 @@ bool ChessPiece::nonCapturingMove(const int to_x, const int to_y)
     return validMove(to_x, to_y) == 1;
 }
 
-std::vector<ChessMove> ChessPiece::capturingMoves() const
+bool ChessPiece::promotionMove(const int to_x, const int to_y) const {
+    return false;
+}
+
+std::vector<ChessMove> ChessPiece::capturingMoves()
 {
     std::vector<ChessMove> ret;
     return ret;
 }
 
-std::vector<ChessMove> ChessPiece::nonCapturingMoves() const
+std::vector<ChessMove> ChessPiece::nonCapturingMoves()
 {
     std::vector<ChessMove> ret;
     return ret;
@@ -87,15 +91,19 @@ std::wostream & operator<<(std::wostream& ostream, ChessPiece * chesspiece) {
     return ostream << chesspiece->utfRepresentation();
 }
 
-bool operator==(const ChessMove & lhs, const ChessMove & rhs) {
-    if (lhs.from_x != rhs.from_x || lhs.from_y != rhs.from_y || lhs.to_x != rhs.to_x || lhs.to_y != rhs.to_y )
-        return false;
-
-    if (lhs.piece->isWhite != rhs.piece->isWhite)
-        return false;
-
-    if (!std::is_same<decltype(lhs.piece), decltype(rhs.piece)>::value)
-        return false;
-
-    return true;
+void ChessPiece::set_board(ChessBoard *board) {
+    this->board = board;
 }
+
+//bool operator==(const ChessMove & lhs, const ChessMove & rhs) {
+//    if (lhs.from_x != rhs.from_x || lhs.from_y != rhs.from_y || lhs.to_x != rhs.to_x || lhs.to_y != rhs.to_y )
+//        return false;
+//
+//    if (lhs.piece->isWhite != rhs.piece->isWhite)
+//        return false;
+//
+//    if (!std::is_same<decltype(lhs.piece), decltype(rhs.piece)>::value)
+//        return false;
+//
+//    return true;
+//}

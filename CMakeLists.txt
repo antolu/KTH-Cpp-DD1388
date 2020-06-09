@@ -31,9 +31,9 @@ add_executable(bad_plumbing
 )
 
 add_executable(chess
-    06-chess/ai.cpp
     06-chess/chessboard.cpp
     06-chess/chesspiece.cpp
+    06-chess/ai.cpp
     06-chess/chesspieces.cpp
     06-chess/gameengine.cpp
     06-chess/main.cpp

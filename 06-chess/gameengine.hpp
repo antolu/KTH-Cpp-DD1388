@@ -30,12 +30,12 @@ public:
     int getNextPlayer() const;
 
     void play();
-    std::vector<ChessBoard> find_possible_moves() const;
+    std::vector<ChessBoard*> find_possible_boards() const;
     std::vector<ChessMove> find_capturing_moves() const;
     std::vector<ChessMove> find_noncapturing_moves() const;
 //    std::vector<ChessBoard> find_promotional_moves() const;
     std::vector<ChessMove> find_promotion_moves() const;
-    ChessBoard get_board() const; // Returns a gopy of the board
+    ChessBoard * get_board() const; // Returns a gopy of the board
 
     /**
      * Returns whether the move `move` forces a capturing move for the opponent

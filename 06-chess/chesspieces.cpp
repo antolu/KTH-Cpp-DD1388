@@ -11,6 +11,10 @@ King::King(const ChessPiece & piece) : ChessPiece(piece) {};
 
 King::~King(){};
 
+King* King::clone() {
+    return new King(*this);
+}
+
 int King::validMove(const int to_x, const int to_y) const
 {
     if (out_of_bounds(to_x, to_y))
@@ -34,9 +38,9 @@ int King::validMove(const int to_x, const int to_y) const
 char32_t King::utfRepresentation() const
 {
     if (isWhite)
-        return U'\u2654';
-    else
         return U'\u265A';
+    else
+        return U'\u2654';
 };
 char King::latin1Representation() const
 {
@@ -76,6 +80,10 @@ Queen::Queen(const ChessPiece & piece) : ChessPiece(piece) {};
 
 Queen::~Queen(){};
 
+Queen* Queen::clone() {
+    return new Queen(*this);
+}
+
 int Queen::validMove(const int to_x, const int to_y) const
 {
     if (out_of_bounds(to_x, to_y))
@@ -99,9 +107,9 @@ int Queen::validMove(const int to_x, const int to_y) const
 char32_t Queen::utfRepresentation() const
 {
     if (isWhite)
-        return U'\u2655';
-    else
         return U'\u265B';
+    else
+        return U'\u2655';
 };
 char Queen::latin1Representation() const
 {
@@ -133,6 +141,9 @@ Bishop::Bishop(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y
 Bishop::Bishop(const ChessPiece & piece) : ChessPiece(piece) {};
 Bishop::Bishop(){};
 Bishop::~Bishop(){};
+Bishop* Bishop::clone() {
+    return new Bishop(*this);
+}
 
 int Bishop::validMove(const int to_x, const int to_y) const
 {
@@ -215,9 +226,9 @@ int Bishop::validMove(const int to_x, const int to_y) const
 char32_t Bishop::utfRepresentation() const
 {
     if (isWhite)
-        return U'\u2657';
-    else
         return U'\u265D';
+    else
+        return U'\u2657';
 };
 char Bishop::latin1Representation() const
 {
@@ -298,6 +309,9 @@ Rook::Rook(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is
 Rook::Rook(const ChessPiece & piece) : ChessPiece(piece) {};
 Rook::Rook(){};
 Rook::~Rook(){};
+Rook* Rook::clone() {
+    return new Rook(*this);
+}
 
 int Rook::validMove(const int to_x, const int to_y) const
 {
@@ -368,9 +382,9 @@ int Rook::validMove(const int to_x, const int to_y) const
 char32_t Rook::utfRepresentation() const
 {
     if (isWhite)
-        return U'\u2656';
-    else
         return U'\u265C';
+    else
+        return U'\u2656';
 };
 char Rook::latin1Representation() const
 {
@@ -450,6 +464,9 @@ std::vector<ChessMove> Rook::nonCapturingMoves()
 Knight::Knight(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
 Knight::Knight(const ChessPiece & piece) : ChessPiece(piece) {};
 Knight::~Knight(){};
+Knight* Knight::clone() {
+    return new Knight(*this);
+}
 
 int Knight::validMove(const int to_x, const int to_y) const
 {
@@ -474,9 +491,9 @@ int Knight::validMove(const int to_x, const int to_y) const
 char32_t Knight::utfRepresentation() const
 {
     if (isWhite)
-        return U'\u2658';
-    else
         return U'\u265E';
+    else
+        return U'\u2658';
 };
 char Knight::latin1Representation() const
 {
@@ -515,6 +532,9 @@ std::vector<ChessMove> Knight::nonCapturingMoves()
 Pawn::Pawn(int x, int y, bool is_white, ChessBoard *board) : ChessPiece(x, y, is_white, board){};
 Pawn::Pawn(const ChessPiece & piece) : ChessPiece(piece) {};
 Pawn::~Pawn(){};
+Pawn* Pawn::clone() {
+    return new Pawn(*this);
+}
 
 int Pawn::validMove(const int to_x, const int to_y) const
 {
@@ -523,7 +543,7 @@ int Pawn::validMove(const int to_x, const int to_y) const
 
     if (!isWhite)
     {
-        if (to_y - y != 1) // not a step forward
+        if (not( to_y - y == 1 or (to_y - y == 2 and y == 1) )) // not a step forward
             return 0;
 
         if (std::abs(to_x - x) > 1)
@@ -541,7 +561,7 @@ int Pawn::validMove(const int to_x, const int to_y) const
     }
     else
     {
-        if (to_y - y != -1) // not a step forward
+        if (not( to_y - y == -1 or (to_y - y == -2 and y == 6 ))) // not a step forward
             return 0;
 
         if (std::abs(to_x - x) > 1)
@@ -562,9 +582,9 @@ int Pawn::validMove(const int to_x, const int to_y) const
 char32_t Pawn::utfRepresentation() const
 {
     if (isWhite)
-        return U'\u2659';
-    else
         return U'\u265F';
+    else
+        return U'\u2659';
 };
 char Pawn::latin1Representation() const
 {
@@ -577,18 +597,34 @@ std::vector<ChessMove> Pawn::generate_moves(const int sign) {
     std::vector<ChessMove> possible_moves;
 
     /* forward or backward move depending on color */
-    int to_y;
-    if (!isWhite)
-        to_y = y + 1;
-    else
-        to_y = y - 1;
+    std::vector<int> to_y;
+    if (!isWhite) {
+        to_y.push_back(y + 1);
+        if (y == 1)
+            to_y.push_back(y + 2);
+    }
+    else {
+        to_y.push_back(y - 1);
+        if (y == 6)
+            to_y.push_back(y - 2);
+    }
 
     /* diagonal or straight move */
-    for (int to_x = x - 1; to_x <= x + 1; to_x++)
-        if (validMove(to_x, to_y) == sign)
-            possible_moves.push_back(ChessMove(x, y, to_x, to_y, this));
+    for (int t_y: to_y)
+        for (int to_x = x - 1; to_x <= x + 1; to_x++)
+            if (validMove(to_x, t_y) == sign)
+                possible_moves.push_back(ChessMove(x, y, to_x, t_y, this));
 
     return possible_moves;
+}
+
+bool Pawn::promotionMove(const int to_x, const int to_y) const {
+
+    if (not validMove(to_x, to_y))
+        return false;
+
+    return (this->y == 6 and to_y == 7 and this->isWhite) or (this->y == 1 and to_y == 0 and not this->isWhite);
+
 }
 
 std::vector<ChessMove> Pawn::capturingMoves() {
