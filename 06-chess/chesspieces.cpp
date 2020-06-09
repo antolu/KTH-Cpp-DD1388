@@ -572,7 +572,7 @@ int Pawn::validMove(const int to_x, const int to_y) const
             return 1;
 
         /* Check destination square for color */
-        if (board->at(to_x, to_y) != nullptr && !same_color(board->at(to_x, to_y)) && std::abs(to_x - x) == 1)
+        if (board->at(to_x, to_y) != nullptr && !same_color(board->at(to_x, to_y)) && std::abs(to_x - x) == 1 and std::abs(to_y - y) == 1)
             return 2;
 
         return 0;

@@ -281,11 +281,11 @@ std::ostream &operator<<(std::ostream &ostream, ChessBoard &board)
         {
             ostream << " ";
             if (board.is_free(j, i)) {
-                if (not ((i + j) % 2))
-                    ostream << conv32.to_bytes(U'\u25A0');
-                else
-                    ostream << conv32.to_bytes(U'\u25A1');
-//                ostream << "_";
+//                if (not ((i + j) % 2))
+//                    ostream << conv32.to_bytes(U'\u25A0');
+//                else
+//                    ostream << conv32.to_bytes(U'\u25A1');
+                ostream << "_";
             }
             else
                 ostream << board.state(j, i);

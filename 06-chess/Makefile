@@ -28,11 +28,11 @@ debug:
 chess: $(BUILD_DIR)/chess
 
 $(BUILD_DIR)/chess: $(OBJS) | build_dir
-	$(CC) $(CXXLIBS) $(CFLAGS) $(LFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $^
 
 
 $(BUILD_DIR)/tests: $(OBJS) | build_dir
-	$(CC) $(CXXLIBS) -o $@ $^
+	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o : %.cpp | build_dir
 	$(CC) $(CFLAGS) $(INCFLAGS) -c -o $@ $<
