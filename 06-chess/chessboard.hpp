@@ -28,12 +28,20 @@ private:
 
     void copy(const ChessBoard& other);
 
+    ChessPiece* operator()(const int x, const int y) const {
+        return state(y, x);
+    }
+
+    ChessPiece * operator()(const int x, const int y) {
+        return state(y, x);
+    }
+
 public:
     void move_piece(const ChessMove & chessMove);
     ChessPiece * promote_piece(const ChessMove & chessMove);
     std::vector<ChessMove> capturingMoves(const bool isWhite) const;
     std::vector<ChessMove> nonCapturingMoves(const bool isWhite) const;
-    std::vector<ChessMove> promotablePieces(const bool is_white) const;
+    std::vector<ChessMove> promotionalMoves(const bool is_white) const;
 
     ChessBoard& operator=(const ChessBoard& other);
 
@@ -41,7 +49,7 @@ public:
     friend std::ostream &operator<<(std::ostream &, ChessBoard &);
     friend std::wostream &operator<<(std::wostream &, ChessBoard &);
 
-    const ChessPiece *at(const int x, const int y) const;
+    ChessPiece *at(const int x, const int y) const;
     const bool is_free(const int x, const int y) const;
 
     ChessBoard * apply_move(const ChessMove move) const;

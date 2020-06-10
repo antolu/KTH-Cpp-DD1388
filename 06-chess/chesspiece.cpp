@@ -50,12 +50,6 @@ bool ChessPiece::same_color(const ChessPiece *other) const
     return isWhite == other->isWhite;
 }
 
-std::vector<ChessMove> ChessPiece::generate_moves(const int sign) const
-{
-    std::vector<ChessMove> ret;
-    return ret;
-}
-
 bool ChessPiece::capturingMove(const int to_x, const int to_y)
 {
     return validMove(to_x, to_y) == 2;
@@ -82,12 +76,16 @@ std::vector<ChessMove> ChessPiece::nonCapturingMoves()
     return ret;
 }
 
-std::ostream & operator<<(std::ostream& ostream, ChessPiece * chesspiece) {
+std::vector<ChessMove> ChessPiece::promotionMoves() {
+    return std::vector<ChessMove>();
+}
+
+std::ostream & operator<<(std::ostream& ostream, const ChessPiece * chesspiece) {
     std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv32;
     return ostream << conv32.to_bytes(chesspiece->utfRepresentation());
 }
 
-std::wostream & operator<<(std::wostream& ostream, ChessPiece * chesspiece) {
+std::wostream & operator<<(std::wostream& ostream, const ChessPiece * chesspiece) {
     return ostream << chesspiece->utfRepresentation();
 }
 

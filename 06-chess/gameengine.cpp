@@ -5,6 +5,7 @@
 #include "gameengine.hpp"
 #include "ai.hpp"
 #include <set>
+#include <thread>
 
 
 GameEngine::GameEngine() {
@@ -30,8 +31,8 @@ GameEngine::GameEngine(std::string player1_type, std::string player2_type) {
             players[i] = new AI1();
         else if (player_types[i] == "random1step")
             players[i] = new AI2();
-        else if (player_types[i] == "minimax")
-            players[i] = new minimaxAI(i == 0);
+//        else if (player_types[i] == "minimax")
+//            players[i] = new minimaxAI(i == 0);
         else
             throw std::runtime_error("AI type not recognised: " + player_types[i]);
     }
@@ -64,6 +65,7 @@ void GameEngine::play() {
         board->move_piece(move);
         std::cout << "Player " << plyr << " finished turn " << ++turn << ". Current board state:\n" << *board << '\n' << std::endl;
         current_player = !current_player;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
@@ -92,7 +94,7 @@ std::vector<ChessMove> GameEngine::find_noncapturing_moves() const {
 }
 
 std::vector<ChessMove> GameEngine::find_promotion_moves() const {
-    return board->promotablePieces(current_player == 0);
+    return board->promotionalMoves(current_player == 0);
 }
 
 bool GameEngine::forces_capturing_move(const ChessMove & move) const {
@@ -111,14 +113,33 @@ bool GameEngine::forces_capturing_move(const ChessMove &move, const std::vector<
     if (new_opponent_moves.empty())
         return false;
 
-    std::set<ChessMove> current_moves(current_capturing_moves.begin(), current_capturing_moves.end());
-    std::set<ChessMove> new_moves(new_opponent_moves.begin(), new_opponent_moves.end());
+    auto contains_same = [](const std::vector<ChessMove> & first, const std::vector<ChessMove> & second) -> bool{
+        int count = 0;
 
-    if (current_moves == new_moves)
-        return false;
+        if (first.size() != second.size())
+            return false;
 
-    return new_moves.size() > current_moves.size();
+        std::set<int> checked;
 
+        for (ChessMove move: first) {
+            for (int i = 0; i < second.size(); i++) {
+                if (checked.count(i))
+                    break;
+                else {
+                    ChessMove other = second[i];
+                    if (move.to_y == other.to_y and move.to_x == other.to_x and
+                        move.from_x == other.from_x and move.from_y == other.from_y) {
+                        checked.insert(i);
+                        count++;
+                    }
+                }
+
+            }
+        }
+        return count == first.size();
+    };
+
+    return contains_same(current_capturing_moves, new_opponent_moves);
 }
 
 ChessBoard * GameEngine::get_board() const {

@@ -20,7 +20,6 @@ protected:
     char select_random_promotion();
 public:
     AI();
-    AI(bool is_white);
     virtual ~AI();
 
     virtual ChessMove play(const GameEngine & state) = 0;
@@ -41,14 +40,14 @@ class AI2 : public AI {
     ChessMove play(const GameEngine & state);
 };
 
-class minimaxAI : public AI {
-    public:
-    minimaxAI();
-    minimaxAI(bool is_white);
-    ~minimaxAI();
-
-    ChessMove play(const GameEngine & state);
-};
+//class minimaxAI : public AI {
+//    public:
+//    minimaxAI();
+//    minimaxAI(bool is_white);
+//    ~minimaxAI();
+//
+//    ChessMove play(const GameEngine & state);
+//};
 
 
 #endif

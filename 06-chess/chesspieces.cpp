@@ -275,7 +275,7 @@ std::vector<ChessMove> Bishop::generate_moves(const int sign) {
             }
 
             /* Break if path is obstructed */
-            if (move_res == 0)
+            if (move_res == 0 or move_res == 2)
                 break;
         }
     };
@@ -358,7 +358,7 @@ int Rook::validMove(const int to_x, const int to_y) const
         auto north_increment = [&mid_y]() { mid_y--; };
         res = loop(north_condition, north_increment);
     }
-    else if (to_x < y)
+    else if (to_y < y)
     {
         auto south_condition = [&to_y](int mid_x, int mid_y) { return mid_y < to_y; };
         auto south_increment = [&mid_y]() { mid_y++; };
@@ -431,7 +431,7 @@ std::vector<ChessMove> Rook::generate_moves(const int sign) {
             }
 
             /* Break if path is obstructed */
-            if (move_res == 0)
+            if (move_res == 0 or move_res == 2)
                 break;
         }
     };
@@ -543,15 +543,19 @@ int Pawn::validMove(const int to_x, const int to_y) const
 
     if (!isWhite)
     {
-        if (not( to_y - y == 1 or (to_y - y == 2 and y == 1) )) // not a step forward
+        if (not( to_y - y == 1 or (to_y - y == 2 and y == 1 and board->is_free(to_x, 2)) )) // not a step forward
             return 0;
 
         if (std::abs(to_x - x) > 1)
             return 0; // more than one horizontal move
 
         /* Check the board if the space is vacant */
-        if (board->is_free(to_x, to_y) && to_x == x)
-            return 1;
+        if (board->is_free(to_x, to_y) && to_x == x) {
+            if (to_y == 7)
+                return 3;
+            else
+                return 1;
+        }
 
         /* Check destination square for color */
         if (board->at(to_x, to_y) != nullptr && !same_color(board->at(to_x, to_y)) && std::abs(to_x - x) == 1)
@@ -561,15 +565,19 @@ int Pawn::validMove(const int to_x, const int to_y) const
     }
     else
     {
-        if (not( to_y - y == -1 or (to_y - y == -2 and y == 6 ))) // not a step forward
+        if (not( to_y - y == -1 or (to_y - y == -2 and y == 6 and board->is_free(to_x, 5)))) // not a step forward
             return 0;
 
         if (std::abs(to_x - x) > 1)
             return 0; // more than one horizontal move
 
         /* Check the board if the space is vacant */
-        if (board->is_free(to_x, to_y) && to_x == x)
-            return 1;
+        if (board->is_free(to_x, to_y) && to_x == x) {
+            if (to_y == 0)
+                return 3;
+            else
+                return 1;
+        }
 
         /* Check destination square for color */
         if (board->at(to_x, to_y) != nullptr && !same_color(board->at(to_x, to_y)) && std::abs(to_x - x) == 1 and std::abs(to_y - y) == 1)
@@ -597,23 +605,27 @@ std::vector<ChessMove> Pawn::generate_moves(const int sign) {
     std::vector<ChessMove> possible_moves;
 
     /* forward or backward move depending on color */
-    std::vector<int> to_y;
+//    std::vector<int> to_y;
+    int to_y;
+    int double_y = 0;
     if (!isWhite) {
-        to_y.push_back(y + 1);
+        to_y = y + 1;
         if (y == 1)
-            to_y.push_back(y + 2);
+            double_y = y + 2;
     }
     else {
-        to_y.push_back(y - 1);
+        to_y = y - 1;
         if (y == 6)
-            to_y.push_back(y - 2);
+            double_y = y - 2;
     }
 
+    if (double_y != 0)
+        if (validMove(x, double_y) == sign)
+            possible_moves.push_back(ChessMove(x, y, x, double_y, this));
     /* diagonal or straight move */
-    for (int t_y: to_y)
-        for (int to_x = x - 1; to_x <= x + 1; to_x++)
-            if (validMove(to_x, t_y) == sign)
-                possible_moves.push_back(ChessMove(x, y, to_x, t_y, this));
+    for (int to_x = x - 1; to_x <= x + 1; to_x++)
+        if (validMove(to_x, to_y) == sign)
+            possible_moves.push_back(ChessMove(x, y, to_x, to_y, this));
 
     return possible_moves;
 }
@@ -635,3 +647,7 @@ std::vector<ChessMove> Pawn::nonCapturingMoves()
 {
     return generate_moves(1);
 };
+
+std::vector<ChessMove> Pawn::promotionMoves() {
+    return generate_moves(3);
+}

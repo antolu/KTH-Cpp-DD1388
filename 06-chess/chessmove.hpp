@@ -13,7 +13,7 @@ struct ChessMove {
 
     char promotion = 0;
 
-    ChessMove(int from_x, int from_y, int to_x, int to_y, ChessPiece * piece){
+    ChessMove(int from_x, int from_y, int to_x, int to_y, ChessPiece * piece) : promotion(0){
         this->from_x = from_x;
         this->from_y = from_y;
         this->to_x = to_x;

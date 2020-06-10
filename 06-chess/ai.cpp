@@ -14,15 +14,21 @@ AI::AI() : rng((std::random_device())()) {
 AI::~AI() = default;;
 
 ChessMove AI::select_random(const std::vector<ChessMove> &moves) {
-    std::uniform_int_distribution<int> dist(0, (int) moves.size());
+
+    if (moves.size() == 1)
+        return moves[0];
+
+    std::uniform_int_distribution<int> dist(0, (int) moves.size() - 1);
 
     int move = dist(rng);
+
+//    std::cout << "selected move " << move << std::endl;
 
     return moves[move];
 }
 
 char AI::select_random_promotion() {
-    std::uniform_int_distribution<int> choice_dist(0, 4);
+    std::uniform_int_distribution<int> choice_dist(0, 3);
     return promotions[choice_dist(rng)];
 }
 
@@ -78,19 +84,19 @@ ChessMove AI2::play(const GameEngine &state) {
 
     auto opponent_capturing_moves = board->capturingMoves(current_player != 0);
 
-    /* Get noncapturing moves and see if they force a move */
-    auto non_capturing_moves = board->nonCapturingMoves(current_player == 0);
-    if (!non_capturing_moves.empty()) {
-        ChessMove ret = find_moves(non_capturing_moves, opponent_capturing_moves);
-        return ret;
-    }
-
+    /* First check for capturing moves */
     std::vector<ChessMove> capturing_moves = board->capturingMoves(current_player == 0);
     if (!capturing_moves.empty())
         return find_moves(capturing_moves, opponent_capturing_moves);
 
+    /* Get noncapturing moves and see if they force a move */
+    auto non_capturing_moves = board->nonCapturingMoves(current_player == 0);
+    if (!non_capturing_moves.empty()) {
+        return find_moves(non_capturing_moves, opponent_capturing_moves);
+    }
+
     /* Check for possible promotions */
-    auto promotion_moves = board->promotablePieces(current_player == 0);
+    auto promotion_moves = board->promotionalMoves(current_player == 0);
     if (!promotion_moves.empty()) {
         // TODO: Check if a promoted piece has a capturing move
 
@@ -108,12 +114,12 @@ ChessMove AI2::play(const GameEngine &state) {
 
 AI2::AI2() = default;
 
-minimaxAI::minimaxAI(bool is_white) {
-
-}
-
-minimaxAI::~minimaxAI() {};
-
-ChessMove minimaxAI::play(const GameEngine &state) {
-    throw std::logic_error("Not yet implemented.");
-}
+//minimaxAI::minimaxAI(bool is_white) {
+//
+//}
+//
+//minimaxAI::~minimaxAI() {};
+//
+//ChessMove minimaxAI::play(const GameEngine &state) {
+//    throw std::logic_error("Not yet implemented.");
+//}

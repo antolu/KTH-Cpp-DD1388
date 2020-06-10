@@ -30,6 +30,8 @@ def main(args):
                     'black_capturing_moves': 0,
                     'white_noncapturing_moves': 0,
                     'black_noncapturing_moves': 0,
+                    'white_promotional_moves': 0,
+                    'black_promotional moves': 0,
                     }
                 }
 
@@ -69,6 +71,10 @@ def main(args):
                 _, out[-1]['tests']['white_noncapturing_moves'] = line.split(' ')
             elif line.startswith('b_ncapt'):
                 _, out[-1]['tests']['black_noncapturing_moves'] = line.split(' ')
+            elif line.startswith('w_prom'):
+                _, out[-1]['tests']['white_promotional_moves'] = line.split(' ')
+            elif line.startswith('b_prom'):
+                _, out[-1]['tests']['black_promotional_moves'] = line.split(' ')
         except StopIteration:
             break
 
@@ -112,6 +118,10 @@ def main(args):
                         write(f'\tstd::vector<ChessMove> {test_type} = chess.nonCapturingMoves(true);')
                     elif test_type == 'black_noncapturing_moves':
                         write(f'\tstd::vector<ChessMove> {test_type} = chess.nonCapturingMoves(false);')
+                    elif test_type == 'white_promotional_moves':
+                        write(f'\tstd::vector<ChessMove> {test_type} = chess.promotionalMoves(true);')
+                    elif test_type == 'black_promotional_moves':
+                        write(f'\tstd::vector<ChessMove> {test_type} = chess.promotionalMoves(false);')
                     written_tests.append((test_type, n))
 
             write()

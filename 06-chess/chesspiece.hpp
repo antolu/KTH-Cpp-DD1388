@@ -29,6 +29,7 @@ protected:
          * Returns 0 if target square is unreachable.
          * Returns 1 if target square is reachable and empty.
          * Returns 2 if move captures a piece.
+         * Returns 3 if the move is a promotional move (pawns only)
          */
     virtual int validMove(const int to_x, const int to_y) const = 0;
     virtual char32_t utfRepresentation() const;
@@ -38,7 +39,7 @@ protected:
 
     bool same_color(const ChessPiece * other) const;
 
-    virtual std::vector<ChessMove> generate_moves(const int sign) const;
+    virtual std::vector<ChessMove> generate_moves(const int sign) = 0;
 
 public:
     /**
@@ -53,6 +54,7 @@ public:
     virtual bool promotionMove(const int to_x, const int to_y) const;
     virtual std::vector<ChessMove> capturingMoves();
     virtual std::vector<ChessMove> nonCapturingMoves();
+    virtual std::vector<ChessMove> promotionMoves();
     virtual ChessPiece* clone() = 0;
     void set_board(ChessBoard * board);
 
@@ -61,8 +63,8 @@ public:
 		*/
     int unnecessaryInt;
 
-    friend std::ostream& operator<<(std::ostream & ostream, ChessPiece * chesspiece);
-    friend std::wostream& operator<<(std::wostream & ostream, ChessPiece * chesspiece);
+    friend std::ostream& operator<<(std::ostream & ostream, const ChessPiece * chesspiece);
+    friend std::wostream& operator<<(std::wostream & ostream, const ChessPiece * chesspiece);
 };
 
 #endif

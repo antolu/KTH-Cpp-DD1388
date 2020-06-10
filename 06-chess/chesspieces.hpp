@@ -8,93 +8,113 @@
 #include "chessmove.hpp"
 
 class ChessBoard;
+
 class ChessPiece;
+
 struct ChessMove;
 
-class King : public ChessPiece
-{
+class King : public ChessPiece {
 protected:
     int validMove(const int to_x, const int to_y) const override;
+
     char32_t utfRepresentation() const;
+
     char latin1Representation() const;
 
     std::vector<ChessMove> generate_moves(const int sign);
 
 public:
-    King(int x, int y, bool is_white, ChessBoard * board);
-    King(const ChessPiece & piece);
+    King(int x, int y, bool is_white, ChessBoard *board);
+
+    King(const ChessPiece &piece);
+
     ~King();
-    King* clone();
+
+    King *clone();
 
     std::vector<ChessMove> capturingMoves();
+
     std::vector<ChessMove> nonCapturingMoves();
 };
 
 
-
-class Bishop : virtual public ChessPiece
-{
+class Bishop : virtual public ChessPiece {
 protected:
     virtual int validMove(const int to_x, const int to_y) const;
+
     virtual char32_t utfRepresentation() const;
+
     virtual char latin1Representation() const;
 
     std::vector<ChessMove> generate_moves(const int sign);
 
 public:
     Bishop();
-    Bishop(const ChessPiece & piece);
-    ~Bishop();
-    virtual Bishop* clone();
 
-    Bishop(int x, int y, bool is_white, ChessBoard * board);
+    Bishop(const ChessPiece &piece);
+
+    ~Bishop();
+
+    virtual Bishop *clone();
+
+    Bishop(int x, int y, bool is_white, ChessBoard *board);
+
     virtual std::vector<ChessMove> capturingMoves();
+
     virtual std::vector<ChessMove> nonCapturingMoves();
 };
 
 
-
-class Rook : virtual public ChessPiece
-{
+class Rook : virtual public ChessPiece {
 protected:
     virtual int validMove(const int to_x, const int to_y) const;
+
     virtual char32_t utfRepresentation() const;
+
     virtual char latin1Representation() const;
 
     std::vector<ChessMove> generate_moves(const int sign);
 
 public:
     Rook();
-    Rook(const ChessPiece & piece);
-    ~Rook();
-    virtual Rook* clone();
 
-    Rook(int x, int y, bool is_white, ChessBoard * board);
+    Rook(const ChessPiece &piece);
+
+    ~Rook();
+
+    virtual Rook *clone();
+
+    Rook(int x, int y, bool is_white, ChessBoard *board);
+
     std::vector<ChessMove> capturingMoves();
+
     std::vector<ChessMove> nonCapturingMoves();
 };
 
 
-
-class Queen : public Rook, public Bishop
-{
+class Queen : public Rook, public Bishop {
 protected:
     int validMove(const int to_x, const int to_y) const;
+
     char32_t utfRepresentation() const;
+
     char latin1Representation() const;
 
     std::vector<ChessMove> generate_moves(const int sign);
 
 public:
-    Queen(int x, int y, bool is_white, ChessBoard * board);
-    Queen(const ChessPiece & piece);
+    Queen(int x, int y, bool is_white, ChessBoard *board);
+
+    Queen(const ChessPiece &piece);
+
     ~Queen();
-    Queen* clone();
+
+    Queen *clone();
 
     std::vector<ChessMove> capturingMoves();
+
     std::vector<ChessMove> nonCapturingMoves();
 };
-
 
 
 struct MoveOffset {
@@ -103,47 +123,60 @@ struct MoveOffset {
 };
 
 
-
-class Knight : public ChessPiece
-{
-    MoveOffset move_candidates[8] = {MoveOffset({1, 2}), MoveOffset({1, -2}), MoveOffset({-1, -2}), MoveOffset({-1, 2}), MoveOffset({2, 1}), MoveOffset({2, -1}), MoveOffset({-2, -1}), MoveOffset({-2, 1})};
+class Knight : public ChessPiece {
+    MoveOffset move_candidates[8] = {MoveOffset({1, 2}), MoveOffset({1, -2}), MoveOffset({-1, -2}), MoveOffset({-1, 2}),
+                                     MoveOffset({2, 1}), MoveOffset({2, -1}), MoveOffset({-2, -1}),
+                                     MoveOffset({-2, 1})};
 protected:
     int validMove(const int to_x, const int to_y) const;
+
     char32_t utfRepresentation() const;
+
     char latin1Representation() const;
 
     std::vector<ChessMove> generate_moves(const int sign);
 
 public:
-    Knight(int x, int y, bool is_white, ChessBoard * board);
-    Knight(const ChessPiece & piece);
+    Knight(int x, int y, bool is_white, ChessBoard *board);
+
+    Knight(const ChessPiece &piece);
+
     ~Knight();
-    Knight* clone();
+
+    Knight *clone();
 
     std::vector<ChessMove> capturingMoves();
+
     std::vector<ChessMove> nonCapturingMoves();
 };
 
 
-
-class Pawn : public ChessPiece
-{
+class Pawn : public ChessPiece {
 protected:
     int validMove(const int to_x, const int to_y) const;
+
     char32_t utfRepresentation() const;
+
     char latin1Representation() const;
 
     std::vector<ChessMove> generate_moves(const int sign);
 
 public:
-    Pawn(int x, int y, bool is_white, ChessBoard * board);
-    Pawn(const ChessPiece & piece);
+    Pawn(int x, int y, bool is_white, ChessBoard *board);
+
+    Pawn(const ChessPiece &piece);
+
     ~Pawn();
-    Pawn* clone();
+
+    Pawn *clone();
 
     bool promotionMove(const int to_x, const int to_y) const;
+
     std::vector<ChessMove> capturingMoves();
+
     std::vector<ChessMove> nonCapturingMoves();
+
+    std::vector<ChessMove> promotionMoves();
 };
 
 #endif
