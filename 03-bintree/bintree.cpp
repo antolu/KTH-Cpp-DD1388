@@ -7,10 +7,6 @@ void insert(Node * & p, int key, double data) {
     p->key = key;
     p->data = data;
   }
-  else if (!p->key) {
-    p->key = key;
-    p->data = data;
-  }
   else if (key > p->key)
     insert(p->right, key, data);
   else if (key < p->key) 

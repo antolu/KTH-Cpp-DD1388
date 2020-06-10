@@ -14,7 +14,7 @@ int & would not work because 17 is an rvalue. the language specifies that you ar
 
 ## How do you check if two objects are equal if they only have operator< and not operator==?
 ```
-(a<b) && !(b<a)
+!(a<b) && !(b<a)
 
 ## Does a < b and !(b < a) compare the same thing?
 !(b < a ) also includes b==a = true
