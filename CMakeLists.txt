@@ -78,6 +78,11 @@ add_executable(knapsack
     07-knapsack/main.cpp
 )
 
+add_executable(meta
+    09-meta/main.cpp
+    09-meta/algorithms.cpp
+)
+
 target_link_libraries(count_if_followed_by gtest)
 target_link_libraries(complex gtest)
 target_link_libraries(bintree gtest)
@@ -86,3 +91,4 @@ target_link_libraries(matrix gtest)
 target_link_libraries(chess gtest)
 target_link_libraries(gnu pthread)
 target_link_libraries(knapsack gtest)
+target_link_libraries(meta gtest)
