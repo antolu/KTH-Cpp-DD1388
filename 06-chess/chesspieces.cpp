@@ -271,7 +271,6 @@ std::vector<ChessMove> Bishop::generate_moves(const int sign) {
             if (move_res == sign)
             {
                 add_move(to_x, to_y);
-                continue;
             }
 
             /* Break if path is obstructed */
@@ -427,7 +426,6 @@ std::vector<ChessMove> Rook::generate_moves(const int sign) {
             if (move_res == sign)
             {
                 add_move(to_x, to_y);
-                continue;
             }
 
             /* Break if path is obstructed */

@@ -7,7 +7,7 @@
 
 extern std::string ai1, ai2;
 
-//TEST(Play,1) {
-//    GameEngine ge(ai1, ai2);
-//    ge.play();
-//}
+TEST(Play,1) {
+    GameEngine ge(ai1, ai2);
+    ge.play();
+}

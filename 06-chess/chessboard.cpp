@@ -290,7 +290,7 @@ std::ostream &operator<<(std::ostream &ostream, ChessBoard &board) {
         ostream << std::endl;
     }
 
-    return ostream << std::endl;
+    return ostream;
 }
 
 std::wostream &operator<<(std::wostream &ostream, ChessBoard &board) {
@@ -304,7 +304,7 @@ std::wostream &operator<<(std::wostream &ostream, ChessBoard &board) {
         ostream << std::endl;
     }
 
-    return ostream << std::endl;
+    return ostream;
 }
 
 const bool ChessBoard::is_free(const int x, const int y) const {
@@ -328,5 +328,20 @@ bool ChessBoard::is_black_win() const {
 }
 
 bool ChessBoard::is_draw() const {
-    throw std::runtime_error("Not yet implemented.");
+    std::vector<ChessMove> white_moves;
+    std::vector<ChessMove> black_moves;
+
+    for (auto piece : white_pieces) {
+        std::vector<ChessMove> moves = piece->nonCapturingMoves();
+        white_moves.insert(white_moves.end(), moves.begin(), moves.end());
+    }
+    for (auto piece : black_pieces) {
+        std::vector<ChessMove> moves = piece->nonCapturingMoves();
+        black_moves.insert(black_moves.end(), moves.begin(), moves.end());
+    }
+
+    if (white_moves.empty() or black_moves.empty())
+        return true;
+    else
+        return false;
 }

@@ -67,14 +67,14 @@ ChessMove AI2::play(const GameEngine &state) {
 
     auto find_moves = [this, &state](const std::vector<ChessMove> &possible_moves,
                                      const std::vector<ChessMove> &opponent_capturing_moves) -> ChessMove {
-        std::vector<ChessMove> bad_moves;
+        std::vector<ChessMove> good_moves;
 
         for (ChessMove move: possible_moves)
             if (state.forces_capturing_move(move, opponent_capturing_moves))
-                bad_moves.push_back(move);
+                good_moves.push_back(move);
 
-        if (!bad_moves.empty())
-            return select_random(bad_moves);
+        if (!good_moves.empty())
+            return select_random(good_moves);
         else
         {
             ChessMove ret = select_random(possible_moves);

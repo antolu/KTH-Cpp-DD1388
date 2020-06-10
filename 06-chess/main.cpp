@@ -12,8 +12,8 @@
 #include "gtest/gtest.h"
 #include "command_line.hpp"
 
-std::string ai1 = "minimax";
-std::string ai2 = "minimax";
+std::string ai1 = "random";
+std::string ai2 = "random1step";
 
 
 //TEST(CapturingMoves, 1) {

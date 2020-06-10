@@ -58,15 +58,19 @@ void GameEngine::play() {
     std::string plyr;
     std::cout << "Starting game, initial board state: \n" << *board << "\n" << std::endl;
 
-    while (!board->isEOG()) {
+    while (not(board->isEOG() or board->is_draw())) {
         plyr = current_player ? "black" :"white";
         ChessMove move = player[current_player]->play(*this);
         /* Need to check if a piece is promoted */
         board->move_piece(move);
-        std::cout << "Player " << plyr << " finished turn " << ++turn << ". Current board state:\n" << *board << '\n' << std::endl;
+        std::cout << "Player " << plyr << " finished turn " << ++turn << ". Current board state:\n" << *board << std::endl;
         current_player = !current_player;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
+    if (board->is_draw() and not board->isEOG())
+        std::cout << "Game ended in a draw." << std::endl;
+    else
+        std::cout << "Player " << (is_black_win() ? "black" : "white") << " won!" << std::endl;
 }
 
 std::vector<ChessBoard*> GameEngine::find_possible_boards() const {
@@ -108,12 +112,12 @@ bool GameEngine::forces_capturing_move(const ChessMove & move) const {
 bool GameEngine::forces_capturing_move(const ChessMove &move, const std::vector<ChessMove> &current_capturing_moves) const {
     ChessBoard * new_board = board->apply_move(move);
 
-    auto new_opponent_moves = new_board->capturingMoves(!getNextPlayer());
+    auto new_opponent_moves = new_board->capturingMoves(getNextPlayer());
 
     if (new_opponent_moves.empty())
         return false;
 
-    auto contains_same = [](const std::vector<ChessMove> & first, const std::vector<ChessMove> & second) -> bool{
+    auto contains_same = [](const std::vector<ChessMove> & first, const std::vector<ChessMove> & second) -> bool {
         int count = 0;
 
         if (first.size() != second.size())
@@ -139,7 +143,7 @@ bool GameEngine::forces_capturing_move(const ChessMove &move, const std::vector<
         return count == first.size();
     };
 
-    return contains_same(current_capturing_moves, new_opponent_moves);
+    return not contains_same(current_capturing_moves, new_opponent_moves) and new_opponent_moves.size() > current_capturing_moves.size();
 }
 
 ChessBoard * GameEngine::get_board() const {
