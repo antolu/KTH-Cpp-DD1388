@@ -13,7 +13,6 @@ enable_testing()
 
 include(GoogleTest)
 
-<<<<<<< HEAD
 add_executable(weird
     01-intro/weird.cpp
 )
