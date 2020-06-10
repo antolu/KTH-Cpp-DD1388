@@ -7,13 +7,14 @@
             "label": "knapsack",
             "type": "shell",
             "command": "make clean && make knapsack",
-            "options": {"cwd": "${workspaceFolder}/07-knapsack", },
+            "options": {"cwd": "${workspaceFolder}/07-knapsack" },
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
         {
+<<<<<<< HEAD
             "type": "shell",
             "label": "g++ build active file",
             "command": "/usr/bin/g++",
@@ -56,6 +57,16 @@
                 "cwd": "${workspaceFolder}/06-chess"
             },
             "group": "build"
+            "label": "meta"
+        },
+        {
+        "type": "shell",
+            "command": "make meta",
+            "options": {"cwd": "${workspaceFolder}/09-meta" },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ],
     "version": "2.0.0"
