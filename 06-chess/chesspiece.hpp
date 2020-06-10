@@ -38,6 +38,10 @@ protected:
     bool out_of_bounds(const int to_x, const int to_y) const;
 
     bool same_color(const ChessPiece * other) const;
+    virtual bool promotionMove(const int to_x, const int to_y) const;
+    virtual std::vector<ChessMove> promotionMoves();
+    virtual ChessPiece* clone() = 0;
+    void set_board(ChessBoard * board);
 
     virtual std::vector<ChessMove> generate_moves(const int sign) = 0;
 
@@ -51,12 +55,8 @@ public:
          * Checks if this move is valid but does not capture a piece.
          */
     bool nonCapturingMove(const int to_x, const int to_y);
-    virtual bool promotionMove(const int to_x, const int to_y) const;
     virtual std::vector<ChessMove> capturingMoves();
     virtual std::vector<ChessMove> nonCapturingMoves();
-    virtual std::vector<ChessMove> promotionMoves();
-    virtual ChessPiece* clone() = 0;
-    void set_board(ChessBoard * board);
 
     /**
 		* For testing multiple inheritance
