@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(Cpp-DD1388)
+set (CMAKE_CXX_STANDARD 17)
 
 if(NOT MSVC)
     add_definitions("-std=c++17 -Wall -g")
@@ -62,6 +63,16 @@ add_executable(gnu
     05-pointers/watermanager.cpp
 )
 
+add_executable(chess
+    06-chess/chessboard.cpp
+    06-chess/chesspiece.cpp
+    06-chess/ai.cpp
+    06-chess/chesspieces.cpp
+    06-chess/gameengine.cpp
+    06-chess/main.cpp
+    06-chess/tests_boards.cpp 06-chess/tests_ai.cpp
+)
+
 add_executable(knapsack
     07-knapsack/knapsack.cpp
     07-knapsack/main.cpp
@@ -72,6 +83,6 @@ target_link_libraries(complex gtest)
 target_link_libraries(bintree gtest)
 target_link_libraries(bintree-testbalance gtest)
 target_link_libraries(matrix gtest)
+target_link_libraries(chess gtest)
 target_link_libraries(gnu pthread)
 target_link_libraries(knapsack gtest)
-

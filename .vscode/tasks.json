@@ -12,6 +12,51 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "shell",
+            "label": "g++ build active file",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            }
+        },
+        {
+            "type": "shell",
+            "label": "cpp build active file",
+            "command": "/usr/bin/cpp",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "chess",
+            "command": "make",
+            "args": [
+                "chess"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/06-chess"
+            },
+            "group": "build"
         }
-    ]
+    ],
+    "version": "2.0.0"
 }

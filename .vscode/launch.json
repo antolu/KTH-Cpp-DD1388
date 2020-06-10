@@ -25,14 +25,27 @@
             "preLaunchTask": "g++ build active file",
             "miDebuggerPath": "/usr/bin/gdb"
         },
-        {
-            "name": "Debug knapsack",
+      {
+        "name": "Debug knapsack",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/07-knapsack/build/knapsack",
+        "args": [
+          "&&",
+          "exit"
+        ],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/07-knapsack",
+        "preLaunchTask": "knapsack"
+      },
+      {
+            "name": "Debug chess",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/07-knapsack/build/knapsack",
-            "args": ["&&",  "exit"],
+            "program": "${workspaceFolder}/06-chess/build/chess",
+            "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/07-knapsack",
+            "cwd": "${workspaceFolder}/06-chess",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -44,7 +57,7 @@
                 }
             ],
             "internalConsoleOptions": "neverOpen",
-            "preLaunchTask": "knapsack",
+            "preLaunchTask": "chess",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
