@@ -35,7 +35,15 @@ TEST(constexpr_primes, test1) {
 }
 
 TEST(ndim_matrix, test1) {
-    nDimMatrix<3> n(9);
+    nDimMatrix<3> n(9); // a cube with 9 * 9 * 9 elements
+    nDimMatrix<6> m(5); // a matrix in six dimensions with 5 * 5 * 5 * 5 * 5 * 5 elements
+    m[1][3][2][1][4][0] = 7;
+    nDimMatrix<3> t(5);
+    t = m[1][3][2];      // assign part (slice) of m to t, the dimensions and element size matches
+    t[1][4][0] = 2;      // changes t but not m
+    std::cout << m[1][3][2][1][4][0] << std::endl; // 7
+    std::cout << t[1][4][0] << std::endl;          // 2
+
 }
 
 int main(int argc, char **argv)

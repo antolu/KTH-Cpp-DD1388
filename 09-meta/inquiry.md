@@ -11,4 +11,4 @@ an array, yes. however since we don't know how many prime numbers there are up t
 Yes, as long as the resulting object is instantiated as constexpr. 
 
 > What did you learn from this assignment?
-The difference between constexpr and template metaprogramming. 
+The difference between constexpr and template metaprogramming. And also how crazy C++ is.

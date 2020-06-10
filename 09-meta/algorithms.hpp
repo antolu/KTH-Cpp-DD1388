@@ -32,55 +32,67 @@ std::string hard_coded_primes();
  * @param vector A vector containing elements of type T.
  * @return The populated ostream.
  */
-template <class T>
-std::ostream & operator<<(std::ostream & ostream, const std::vector<T> & vector) {
+template<class T>
+std::ostream &operator<<(std::ostream &ostream, const std::vector<T> &vector) {
     for (auto obj : vector)
         ostream << obj << " ";
     return ostream;
 }
 
-template <int x>
+template<int x>
 struct Factorial {
     static const int nr = x * Factorial<x - 1>::nr;
 };
 
-template<> 
-struct Factorial<1>
-{
+template<>
+struct Factorial<1> {
     static const int nr = 1;
 };
 
-template <int p, int i>
+template<int p, int i>
 struct check_if_prime {
-    enum { prim = (p == 2) ||  ((p%i) && check_if_prime<(i > 2 ? p : 0), i - 1>::prim) };
+    enum {
+        prim = (p == 2) || ((p % i) && check_if_prime<(i > 2 ? p : 0), i - 1>::prim)
+    };
 };
-
-template <>
-struct check_if_prime<0, 0> { enum {prim = 1};} ;
 
 template<>
-struct check_if_prime<0, 1> { enum {prim = 1}; };
-
-template <unsigned int X>
-struct is_prime {
-    enum {prim = check_if_prime<X, X - 1>::prim };
+struct check_if_prime<0, 0> {
+    enum {
+        prim = 1
+    };
 };
 
-template <int i>
+template<>
+struct check_if_prime<0, 1> {
+    enum {
+        prim = 1
+    };
+};
+
+template<unsigned int X>
+struct is_prime {
+    enum {
+        prim = check_if_prime<X, X - 1>::prim
+    };
+};
+
+template<int i>
 struct D {
-    D(void*);
+    D(void *);
+
     operator int();
 };
 
 inline constexpr bool is_prime_constexpr(size_t number, size_t c) {
-    return (c * c > number ) ? true : (number % c == 0) ? false : is_prime_constexpr(number, c+1);
+    return (c * c > number) ? true : (number % c == 0) ? false : is_prime_constexpr(number, c + 1);
 }
 
 inline constexpr bool is_prime_func(size_t number) {
     return (number <= 1) ? false : is_prime_constexpr(number, 2);
 }
 
-template <int N>
+template<int N>
 struct find_constexpr_primes {
     constexpr find_constexpr_primes() : arr() {
         int counter = 0;
@@ -91,23 +103,21 @@ struct find_constexpr_primes {
         for (int j = counter; j < N; j++)
             arr[j] = 0;
     }
+
     int arr[N];
 };
 
-template <int x>
-class nDimMatrix : std::vector<double> {
-    public:
-    constexpr nDimMatrix(int d)  {
-
+template<int d>
+class nDimMatrix : public std::vector<nDimMatrix<d-1>> {
+public:
+    explicit nDimMatrix(int D) : std::vector<nDimMatrix<d-1>>(D, nDimMatrix<d-1>(D)) {
     }
 };
 
 template<>
-class nDimMatrix<1>  {
+class nDimMatrix<1> : public std::vector<double> {
 public:
-    int x;
-    nDimMatrix() : x(0) {}
-
+    explicit nDimMatrix(int D) : std::vector<double>(D, 0.) {}
 };
 
 
