@@ -1,4 +1,4 @@
-APP=01
+APP=complex
 
 SRC_DIR=.
 INC_DIR=inc
@@ -6,11 +6,8 @@ BUILD_DIR=build
 
 CC=g++
 LD=g++
-CXXTESTGEN=cxxtestgen
-CXXLIBS=-I/opt/cxxtest/
-CXXFLAGS=--error-printer
 CFLAGS=-O2 -Wall -std=c++11 -g -fext-numeric-literals
-LFLGAS=
+LFLAGS=-lgtest
 DFLAGS=-g3 -O0 -DDEBUG
 INCFLAGS=-I$(INC_DIR)
 
@@ -20,7 +17,7 @@ OBJS = $(patsubst %,$(BUILD_DIR)/%.o,$(basename $(SOURCES)))
 TESTS=$(wildcard $(SRC_DIR)/*.cxxtest.cpp)
 
 .PHONY: all 
-all: $(BUILD_DIR)/$(APP)
+all: $(OBJS)
 
 .PHONY: debug
 debug: CFLAGS+=$(DFLAGS)
@@ -30,7 +27,7 @@ test : $(BUILD_DIR)/tests
 	./$(BUILD_DIR)/tests
 
 $(BUILD_DIR)/tests: $(OBJS)
-	$(CC) $(CXXLIBS) -o $@ $?
+	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $?
 
 $(BUILD_DIR)/%.o : %.cpp | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(INCFLAGS) -c -o $@ $<

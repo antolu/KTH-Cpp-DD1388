@@ -1,19 +1,19 @@
-#include <catch2/catch.hpp>
+#include <gtest/gtest.h>
 
 #include "bintree.hpp"
 #include <algorithm>
 #include <random>
 #include <vector>
 
-TEST_CASE("Balance")
+TEST(balance, 1)
 {
     std::vector<int> keys(9000, 0);
 
     for (int i = 1; i <= 9000; i++)
         keys[i - 1] = i;
 
-    // int seed = 960611;
-    int seed = 96;
+     int seed = 960611;
+//    int seed = 96;
     std::shuffle(std::begin(keys), std::end(keys), std::default_random_engine(seed));
 
     int max_res[800];
@@ -68,4 +68,9 @@ TEST_CASE("Balance")
     std::cout << "Max height diff: " << *std::max_element(std::begin(diffs), std::end(diffs)) << std::endl;
 
     std::cout << "Min height diff: " << *std::min_element(std::begin(diffs), std::end(diffs)) << std::endl;
+}
+
+int main(int argc, char ** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

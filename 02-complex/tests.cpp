@@ -1,44 +1,44 @@
 #define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <gtest/gtest.h>
 
 #include "Complex.hpp"
 #include <cmath>
 
-TEST_CASE("Complex numbers") {
+TEST(complex_numbers, complex_numers) {
   Complex x;
-  REQUIRE( x == Complex(0, 0));
+  EXPECT_EQ( x, Complex(0, 0));
   
   Complex x2 = 5;
-  REQUIRE( x2 == Complex(5.0, 0));
+  EXPECT_EQ( x2, Complex(5.0, 0));
   
   Complex y(6,2);
-  REQUIRE( y == Complex(6.0, 2.0));
+  EXPECT_EQ( y, Complex(6.0, 2.0));
   
   Complex z = x + y;
-  REQUIRE( z == Complex(6.0, 2.0));
+  EXPECT_EQ( z, Complex(6.0, 2.0));
 
   Complex w(5, -3);
 
   Complex u = y - w;
-  REQUIRE( u == Complex(1, 5));
+  EXPECT_EQ( u, Complex(1, 5));
 
   Complex t = y * w;
-  REQUIRE( t == Complex(36, -8));
+  EXPECT_EQ( t,  Complex(36, -8));
 
   Complex s = y / w;
-  REQUIRE( s == Complex(36.0/34, -8.0/34));
+  EXPECT_EQ( s, Complex(36.0/34, -8.0/34));
   
   Complex k = 3 + 5.0_i;
-  REQUIRE( k == Complex(3.0, 5.0));
+  EXPECT_EQ( k, Complex(3.0, 5.0));
 
   k -= 5 + ( 1.0_i * Complex(5,3) );
-  REQUIRE( k == 1 );
+  EXPECT_EQ( k, 1 );
 
-  REQUIRE( abs(w) == std::sqrt(34) );
-  REQUIRE( real(y) == 6.0 );
-  REQUIRE( imag(y) == -3.0 );
-  REQUIRE( y.real() == 6.0 );
-  REQUIRE( y.imag() == -3.0 );
+  EXPECT_EQ( abs(w), std::sqrt(34) );
+  EXPECT_EQ( real(y), 6.0 );
+  EXPECT_EQ( imag(y), 2.0 );
+  EXPECT_EQ( y.real(), 6.0 );
+  EXPECT_EQ( y.imag(), 2.0 );
 
   std::cout << "w != y:" << ( w != y ) << std::endl;
   std::cout << "w != w:" << ( w != w ) << std::endl;
@@ -47,4 +47,24 @@ TEST_CASE("Complex numbers") {
   std::cout << Complex(6, -6) / 6 << std::endl;
   std::cout << Complex(-6, -6) / 6 << std::endl;
   std::cout << Complex(-6, 6) / 6 << std::endl;
+}
+
+TEST(istream, 1) {
+    std::istringstream real1("10.8");
+    std::istringstream real2("(10.8)");
+    std::istringstream combo3("(-9,20.54)");
+
+    Complex complex1, complex2, complex3;
+    real1 >> complex1;
+    real2 >> complex2;
+    combo3 >> complex3;
+
+    EXPECT_EQ(complex1, Complex(10.8, 0));
+    EXPECT_EQ(complex2, Complex(10.8, 0));
+    EXPECT_EQ(complex3, Complex(-9, 20.54));
+}
+
+int main(int argc, char ** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

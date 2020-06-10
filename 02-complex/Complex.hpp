@@ -37,7 +37,7 @@ class Complex {
   friend double imag(const Complex& c);
 
   friend std::ostream& operator<<(std::ostream& out, const Complex& c);
-  friend std::istream& operator>>(std::istream& in, const Complex& c);
+  friend std::istream& operator>>(std::istream& in,Complex& c);
   // friend constexpr Complex operator"" _i (long double arg);
 };
 

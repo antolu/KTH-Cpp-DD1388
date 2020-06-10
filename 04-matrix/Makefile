@@ -6,7 +6,7 @@ CC=g++
 LD=g++
 
 CFLAGS=-O2 -Wall -std=c++11 -g -fext-numeric-literals
-LFLGAS=
+LFLAGS=-lgtest
 DFLAGS=-ggdb3 -O0 -DDEBUG
 CFLAGS+=$(DFLAGS)
 
@@ -28,7 +28,7 @@ test : $(BUILD_DIR)/tests
 	./$(BUILD_DIR)/tests --use-colour=no
 
 $(BUILD_DIR)/tests: $(OBJS) | build_dir
-	$(CC) $(CXXLIBS) -o $@ $^
+	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o : %.cpp | build_dir
 	$(CC) $(CFLAGS) $(INCFLAGS) -c -o $@ $<
